@@ -27,11 +27,9 @@
         <activity android:name=".LaunchCameraActivity" />
         <activity android:name=".CameraActivity" />
         <activity android:name=".ShowImgActivity"
-            />
-<!--            android:hardwareAccelerated="false"/>-->
+            android:hardwareAccelerated="false"/>
         <activity android:name=".ImageEvaluate"
-            />
-<!--            android:hardwareAccelerated="false"/>-->
+            android:hardwareAccelerated="false"/>
     </application>
 
 </manifest>
