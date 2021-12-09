@@ -33,7 +33,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launch_camera);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("CombiFlash");
+        getSupportActionBar().setTitle("CombiFlash (Standard)");
         startCam=findViewById(R.id.camStart);
         userDetailMenu=findViewById(R.id.userDetailMenu);
         restLayout=findViewById(R.id.restLayout);
