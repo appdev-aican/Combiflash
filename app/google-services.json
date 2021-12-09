@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "824571333401",
+    "project_id": "septech-8a9b4",
+    "storage_bucket": "septech-8a9b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:824571333401:android:be6ffff74671701e75d388",
+        "android_client_info": {
+          "package_name": "com.example.combiflash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "824571333401-bheg278jj5ci7q76ala77vidj2r444ga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1mKu86ZJIJSo1gqm53PNwM7h0PSVrCIQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "824571333401-bheg278jj5ci7q76ala77vidj2r444ga.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

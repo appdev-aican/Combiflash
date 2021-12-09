@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Septech</string>
+    <string name="headline1">Let\'s get you started!</string>
+    <string name="headline2">Welcome, user!</string>
+    <string name="body1">Already have an account? Login</string>
+    <string name="or">OR</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="body2">Don’t have an account? Register</string>
+    <string name="sampleTxt2">Connect your device now!</string>
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/add_btn_bg.xml" value="0.10885416666666667" />
+        <entry key="app/src/main/res/drawable/backgroung.xml" value="0.21458333333333332" />
+        <entry key="app/src/main/res/drawable/lock.xml" value="0.10885416666666667" />
+        <entry key="app/src/main/res/drawable/lock2.xml" value="0.10885416666666667" />
+        <entry key="app/src/main/res/drawable/unlock.xml" value="0.10885416666666667" />
+        <entry key="app/src/main/res/layout/activity_camera.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/activity_image_evaluate.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/activity_launch_camera.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/activity_scan_q_r_code.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/activity_scan_q_r_code_small.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/activity_show_img.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/edit_text_layout.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/line_layout.xml" value="0.1984375" />
+        <entry key="app/src/main/res/menu/main.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
