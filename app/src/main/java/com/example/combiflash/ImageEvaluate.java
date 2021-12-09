@@ -1,6 +1,7 @@
 package com.example.combiflash;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.net.Uri;
@@ -24,9 +25,11 @@ import java.util.Stack;
 
 public class ImageEvaluate extends AppCompatActivity implements View.OnTouchListener{
     ImageView iv_capture;
-    AppCompatButton addBtn,minusBtn;
+    AppCompatButton addBtn,minusBtn,proceedBtn;
     ConstraintLayout parentLayout,viewLineUpLayout;
     View upView,bottomView;
+    private boolean isStartedForResult;
+    private int sampleIndex=-1;
     int lockClicked=0,pos;
     float dy,valueMoveUp,height_in_cm;
     Stack<View>viewStack;
@@ -37,7 +40,9 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_image_evaluate);
-        // TODO: 08/12/21 get info from intent about whether this activity has been launched as startforresult
+        isStartedForResult=getIntent().getBooleanExtra(getResources().getString(R.string.isStartedForResultKey),false);
+        if(isStartedForResult)
+            sampleIndex=getIntent().getIntExtra(getResources().getString(R.string.sampleIndexKey),-1);
         String path=getIntent().getStringExtra("img_path");
         height_in_cm=  getIntent().getFloatExtra("height_in_cm",0);
         valueMoveUp=getIntent().getFloatExtra("valueUpMove",0);
@@ -52,6 +57,7 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
 
         addBtn=findViewById(R.id.addBtn);
         minusBtn=findViewById(R.id.minusBtn);
+        proceedBtn=findViewById(R.id.btnProceed);
         iv_capture.setImageURI(Uri.parse(path));
         view=findViewById(android.R.id.content);
         viewStack=new Stack<>();
@@ -71,9 +77,23 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
                 }
             }
         });
-        // TODO: 08/12/21 create a "proceed" button
-        // TODO: 08/12/21 if this activity was started for result, just set the result to the required values
-        // TODO: 08/12/21 if this activity was not started for result, then open the graph activity from here with all the requireds values(beacuse it is standard mode
+        proceedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isStartedForResult){
+                    Intent intent=new Intent();
+//                    intent.putExtra
+                    setResult(RESULT_OK,intent);
+                    finish();
+                    // TODO: 08/12/21 just set the result to the required values
+                }
+                else{
+                    // TODO: 08/12/21 if this activity was not started for result, then open the graph activity from here with all the requireds values(beacuse it is standard mode
+
+                }
+            }
+        });
+
     }
 
     @SuppressLint("ClickableViewAccessibility")

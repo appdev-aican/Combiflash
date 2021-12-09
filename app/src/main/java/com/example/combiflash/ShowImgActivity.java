@@ -12,12 +12,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class ShowImgActivity extends AppCompatActivity implements View.OnTouchListener{
+    private boolean isStartedForResult;
+    private int sampleIndex=-1;
+    private final int requestCode=1;
     ImageView iv_capture;
     View viewLineUp;
     ConstraintLayout layout;
@@ -30,7 +34,9 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_img);
         getSupportActionBar().hide();
-        // TODO: 08/12/21 get info from intent about whether this activity has been launched as startforresult
+        isStartedForResult=getIntent().getBooleanExtra(getResources().getString(R.string.isStartedForResultKey),false);
+        if(isStartedForResult)
+            sampleIndex=getIntent().getIntExtra(getResources().getString(R.string.sampleIndexKey),-1);
         String path=getIntent().getStringExtra("img_path");
         iv_capture=findViewById(R.id.iv_capture);
         setLengthBtn=findViewById(R.id.setLengthBtn);
@@ -101,14 +107,20 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
                 int[] h=new int[2];
                 layout.getLocationOnScreen(h);
                 Log.e("pos1",String.valueOf(h[1]));
-                // TODO: 08/12/21 if this activity is statrfor result then start the imageEvaluate activity too for result and set the result after getting the result back from imageevaluate activity in onactivityresult otherwise all good
-                // TODO: 08/12/21 also pass the info whether the imageevaluate is being strarted for result
                 Intent intent=new Intent(ShowImgActivity.this,ImageEvaluate.class);
                 intent.putExtra("img_path",path);
                 intent.putExtra("height_in_cm",height_in_cm);
                 intent.putExtra("valueUpMove",valueMovement);
                 intent.putExtra("pos",h[1]);
-                startActivity(intent);
+                if(isStartedForResult){
+                    intent.putExtra(getResources().getString(R.string.isStartedForResultKey), true);
+                    intent.putExtra(getResources().getString(R.string.sampleIndexKey), sampleIndex);
+                    startActivityForResult(intent, requestCode);
+                }
+                else{
+                    intent.putExtra(getResources().getString(R.string.isStartedForResultKey),false);
+                    startActivity(intent);
+                }
             }
         });
         layout.setOnTouchListener(this);
@@ -134,5 +146,17 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
         else {
             return false;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==this.requestCode&&resultCode==RESULT_OK){
+            Intent intent=new Intent();
+            // TODO: 10/12/21 put the info received in result to the backward intent
+//            intent.putExtra()
+            setResult(RESULT_OK,intent);
+        }
+        finish();
     }
 }

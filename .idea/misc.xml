@@ -9,9 +9,11 @@
         <entry key="app/src/main/res/drawable/btn_background_blue.xml" value="0.21458333333333332" />
         <entry key="app/src/main/res/drawable/lock.xml" value="0.10885416666666667" />
         <entry key="app/src/main/res/drawable/lock2.xml" value="0.10885416666666667" />
+        <entry key="app/src/main/res/drawable/minus.xml" value="0.1390625" />
+        <entry key="app/src/main/res/drawable/minus_btn_bg.xml" value="0.1390625" />
         <entry key="app/src/main/res/drawable/unlock.xml" value="0.10885416666666667" />
         <entry key="app/src/main/res/layout/activity_camera.xml" value="0.1984375" />
-        <entry key="app/src/main/res/layout/activity_image_evaluate.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/activity_image_evaluate.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_launch_camera.xml" value="0.1984375" />
         <entry key="app/src/main/res/layout/activity_launch_camera_dual.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.1984375" />

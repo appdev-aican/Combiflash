@@ -70,8 +70,9 @@ public class LaunchCameraActivity extends AppCompatActivity {
         startCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 08/12/21 pass the info key that CameraActivity is being started as not startforactivity
-                startActivity(new Intent(LaunchCameraActivity.this, CameraActivity.class));
+                Intent intent=new Intent(LaunchCameraActivity.this, CameraActivity.class);
+                intent.putExtra(getResources().getString(R.string.isStartedForResultKey),false);
+                startActivity(intent);
             }
         });
     }

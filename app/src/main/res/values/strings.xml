@@ -12,4 +12,8 @@
     <string name="last_name">Last name</string>
     <string name="body2">Don’t have an account? Register</string>
     <string name="sampleTxt2">Connect your device now!</string>
+
+<!--    intent keys-->
+    <string name="isStartedForResultKey">ExpectsResult</string>
+    <string name="sampleIndexKey">SampleIndex</string>
 </resources>

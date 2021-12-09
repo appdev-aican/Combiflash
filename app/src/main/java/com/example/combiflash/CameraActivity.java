@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraControl;
@@ -38,8 +39,11 @@ import java.util.concurrent.Executors;
 public class CameraActivity extends AppCompatActivity {
     private ImageCapture imageCapture;
     private boolean flashMode=false;
+    private final int requestCode=1;
     private static final int  MY_PERMISSIONS_REQUEST_CAMERA=0;
     private static final String  FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
+    private boolean isStartedForResult;
+    private int sampleIndex=-1;
     ProgressDialog dialog;
     PreviewView preV;
     File outputDirectory;
@@ -50,7 +54,9 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-        // TODO: 08/12/21 get info from intent about whether this activity has been launched as startforresult
+        isStartedForResult=getIntent().getBooleanExtra(getResources().getString(R.string.isStartedForResultKey),false);
+        if(isStartedForResult)
+            sampleIndex=getIntent().getIntExtra(getResources().getString(R.string.sampleIndexKey),-1);
         getSupportActionBar().hide();
         dialog=new ProgressDialog(CameraActivity.this);
         // Check camera permissions if all permission granted
@@ -161,10 +167,20 @@ public class CameraActivity extends AppCompatActivity {
                         // TODO: 08/12/21 also pass the info whether the showimgactivity is being strarted for result 
                         Intent intent=new Intent(CameraActivity.this,ShowImgActivity.class);
                         intent.putExtra("img_path",String.valueOf(savedUri));
-                        Log.e("TAG", "onImageSaved: "+String.valueOf(savedUri) );
+                        Log.e("TAG", "onImageSaved: "+ savedUri);
                         Toast.makeText(CameraActivity.this, "Photo capture succeeded", Toast.LENGTH_LONG).show();
-                        startActivity(intent);
-                        finish();
+
+                        if(isStartedForResult){
+                            intent.putExtra(getResources().getString(R.string.isStartedForResultKey), true);
+                            intent.putExtra(getResources().getString(R.string.sampleIndexKey), sampleIndex);
+                            startActivityForResult(intent, requestCode);
+                        }
+                        else{
+                            intent.putExtra(getResources().getString(R.string.isStartedForResultKey),false);
+                            startActivity(intent);
+                            finish();
+                        }
+
                     }
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
@@ -181,5 +197,17 @@ public class CameraActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         dialog.cancel();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==this.requestCode&&resultCode==RESULT_OK){
+            Intent intent=new Intent();
+            // TODO: 10/12/21 put the info received in result to the backward intent
+//            intent.putExtra()
+            setResult(RESULT_OK,intent);
+        }
+        finish();
     }
 }
