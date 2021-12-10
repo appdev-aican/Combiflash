@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="7pt"
         android:layout_marginVertical="7pt"
-        android:background="@drawable/btn_background_blue"
+        android:background="@drawable/btn_background"
         android:text="Open Camera"
         app:layout_constraintTop_toBottomOf="@+id/tvSample1" />
 
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="7pt"
         android:layout_marginVertical="7pt"
-        android:background="@drawable/btn_background_blue"
+        android:background="@drawable/btn_background"
         android:text="Open Camera"
         app:layout_constraintTop_toBottomOf="@+id/tvSample2" />
     <ImageView
@@ -86,6 +86,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias=".8" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnProceed"
+        android:visibility="gone"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="DONE"
+        android:textSize="17sp"
+        app:layout_constraintTop_toBottomOf="@id/btnRecSampleB"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30pt"
+        android:background="@drawable/btn_background"
+        android:paddingVertical="15dp" />
      <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/userDetailMenu"
         android:layout_width="0dp"
@@ -166,5 +179,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

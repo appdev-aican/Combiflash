@@ -82,6 +82,8 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
             public void onClick(View v) {
                 if(isStartedForResult){
                     Intent intent=new Intent();
+                    Log.e("TAG", "onClick: sample index in image evaluate is "+sampleIndex );
+                    intent.putExtra(getResources().getString(R.string.sampleIndexKey),sampleIndex);
 //                    intent.putExtra
                     setResult(RESULT_OK,intent);
                     finish();

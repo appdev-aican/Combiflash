@@ -43,10 +43,14 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
             sampleIndex = getIntent().getIntExtra(getResources().getString(R.string.sampleIndexKey), -1);
             activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    Intent backwardIntent = new Intent();
-                    // TODO: 10/12/21 put the info received in result to the backward intent
+                    if (result.getData() != null) {
+                        int si = result.getData().getIntExtra(getResources().getString(R.string.sampleIndexKey), -1);
+                        Intent backwardIntent = new Intent();
+                        backwardIntent.putExtra(getResources().getString(R.string.sampleIndexKey),si);
+                        // TODO: 10/12/21 put the info received in result to the backward intent
 //            intent.putExtra()
-                    setResult(RESULT_OK, backwardIntent);
+                        setResult(RESULT_OK, backwardIntent);
+                    }
                 }
                 finish();
             });

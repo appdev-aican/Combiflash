@@ -1,5 +1,7 @@
 package com.example.combiflash;
 
+import static com.example.combiflash.AppFunctions.setTextDrawables;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,9 +27,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LaunchCameraDualActivity extends AppCompatActivity {
     private final int mRequestCode = 1;
+    boolean isFirstSampleTaken = false, isSecondSampleTaken = false;
     ConstraintLayout userDetailMenu, restLayout;
-    AppCompatButton startCam1, startCam2, signOut;
-    TextView userName, userEmail;
+    AppCompatButton startCam1, startCam2, signOut, proceedBtn;
+    TextView userName, userEmail, tvSample1, tvSample2;
     FirebaseFirestore db;
     FirebaseAuth auth;
     DocumentReference user;
@@ -39,6 +43,9 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("CombiFlash (Dual)");
+        tvSample1 = findViewById(R.id.tvSample1);
+        tvSample2 = findViewById(R.id.tvSample2);
+        proceedBtn = findViewById(R.id.btnProceed);
         startCam1 = findViewById(R.id.btnRecSampleA);
         startCam2 = findViewById(R.id.btnRecSampleB);
         userDetailMenu = findViewById(R.id.userDetailMenu);
@@ -51,7 +58,10 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = db.document("users/" + auth.getCurrentUser().getUid());
         loadData();
-
+        proceedBtn.setVisibility(View.INVISIBLE);
+        proceedBtn.setOnClickListener(v -> {
+            // TODO: 10/12/21 take to graphs and processing activity
+        });
         signOut.setOnClickListener(view -> {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(LaunchCameraDualActivity.this, LoginActivity.class)
@@ -63,7 +73,28 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
                 // TODO: 10/12/21 handle the data received from child activity
-                Toast.makeText(LaunchCameraDualActivity.this, "In launch camera dual onactivity result", Toast.LENGTH_SHORT).show();
+                if (result.getData() != null) {
+                    int si = result.getData().getIntExtra(getResources().getString(R.string.sampleIndexKey), -1);
+                    switch (si) {
+                        case 1:
+                            setTextDrawables(tvSample1, 0, 0, 0, 0, R.drawable.ic_baseline_check_24, R.color.green, 0, 0);
+                            startCam1.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.btn_background_blue, null));
+                            startCam1.setText("Retake");
+                            isFirstSampleTaken = true;
+                            break;
+                        case 2:
+                            setTextDrawables(tvSample2, 0, 0, 0, 0, R.drawable.ic_baseline_check_24, R.color.green, 0, 0);
+                            startCam2.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.btn_background_blue, null));
+                            startCam2.setText("Retake");
+                            isSecondSampleTaken = true;
+                            break;
+                        default:
+                            Toast.makeText(LaunchCameraDualActivity.this, "Sample couldn't be recorded", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if (isFirstSampleTaken && isSecondSampleTaken) {
+                    proceedBtn.setVisibility(View.VISIBLE);
+                }
             }
         });
         startCam1.setOnClickListener(view -> {
@@ -71,14 +102,12 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
             intent.putExtra(getResources().getString(R.string.isStartedForResultKey), true);
             intent.putExtra(getResources().getString(R.string.sampleIndexKey), 1);
             activityResultLauncher.launch(intent);
-//            startActivityForResult(intent, mRequestCode);
         });
         startCam2.setOnClickListener(view -> {
             Intent intent = new Intent(LaunchCameraDualActivity.this, CameraActivity.class);
             intent.putExtra(getResources().getString(R.string.isStartedForResultKey), true);
             intent.putExtra(getResources().getString(R.string.sampleIndexKey), 2);
             activityResultLauncher.launch(intent);
-//            startActivityForResult(intent, mRequestCode);
         });
     }
 

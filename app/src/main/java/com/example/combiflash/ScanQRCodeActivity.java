@@ -284,9 +284,6 @@ public class ScanQRCodeActivity extends AppCompatActivity implements OnQrResultL
                         RadioButton radioButtonDual = customLayout.findViewById(R.id.rbDual);
                         radioButtonStandard.setOnClickListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true));
                         radioButtonDual.setOnClickListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true));
-                        // DONE: 08/12/21 Add dialogue for mode: STANDARD & DUAL . Open activity accordingly (LaunchCameraActivity for standard mode and A new LaunchCameraDual for DUAL)
-                        // TODO: 08/12/21 Create the LaunchCameraDual activity and start the CameraActivity from it as startActivityForResult Also pass a key to CameraActivity which will tell it that it has been started for result
-                        // TODO: 08/12/21 the  LaunchCameraDualactivity will also contain a proceed button that will lead to graphs activity with all the required data in intent (if both samples have been recorded)
 
                     }
                 });

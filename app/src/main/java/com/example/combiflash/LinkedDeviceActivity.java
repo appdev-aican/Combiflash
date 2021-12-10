@@ -1,11 +1,7 @@
 package com.example.combiflash;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,8 +11,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,10 +33,10 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
+
 public class LinkedDeviceActivity extends AppCompatActivity {
     AppCompatButton linkDev,signOut;
     TextView userName,userEmail;
@@ -144,7 +149,35 @@ public class LinkedDeviceActivity extends AppCompatActivity {
                             v.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    startActivity(new Intent(LinkedDeviceActivity.this,CameraActivity.class));
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(LinkedDeviceActivity.this);
+                                    builder.setTitle("Please select mode");
+                                    final View customLayout = getLayoutInflater().inflate(R.layout.mode_select_layout, null);
+                                    builder.setView(customLayout);
+                                    builder.setPositiveButton("OK", (dialog, which) -> {
+                                        RadioGroup radioGroup = customLayout.findViewById(R.id.rgModes);
+                                        switch (radioGroup.getCheckedRadioButtonId()) {
+                                            case R.id.rbStandard:
+                                                startActivity(new Intent(LinkedDeviceActivity.this, LaunchCameraActivity.class));
+                                                break;
+                                            case R.id.rbDual:
+                                                startActivity(new Intent(LinkedDeviceActivity.this, LaunchCameraDualActivity.class));
+                                                break;
+                                        }
+                                    });
+                                    AlertDialog dialog = builder.create();
+                                    dialog.setCanceledOnTouchOutside(false);
+                                    dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                        @Override
+                                        public void onCancel(DialogInterface dialog) {
+                                            finish();
+                                        }
+                                    });
+                                    dialog.show();
+                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                                    RadioButton radioButtonStandard = customLayout.findViewById(R.id.rbStandard);
+                                    RadioButton radioButtonDual = customLayout.findViewById(R.id.rbDual);
+                                    radioButtonStandard.setOnClickListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true));
+                                    radioButtonDual.setOnClickListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true));
                                 }
                             });
                         }
