@@ -1,11 +1,5 @@
 package com.example.combiflash;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +7,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,13 +23,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LaunchCameraDualActivity extends AppCompatActivity {
-    private final int requestCode=1;
+    private final int mRequestCode = 1;
     ConstraintLayout userDetailMenu, restLayout;
     AppCompatButton startCam1, startCam2, signOut;
     TextView userName, userEmail;
     FirebaseFirestore db;
     FirebaseAuth auth;
     DocumentReference user;
+    ActivityResultLauncher<Intent> activityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,39 +52,33 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
         user = db.document("users/" + auth.getCurrentUser().getUid());
         loadData();
 
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(LaunchCameraDualActivity.this, LoginActivity.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                finish();
+        signOut.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(LaunchCameraDualActivity.this, LoginActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            finish();
+        });
+        restLayout.setOnClickListener(view -> userDetailMenu.setVisibility(View.GONE));
+        userDetailMenu.setOnClickListener(view -> userDetailMenu.setVisibility(View.GONE));
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK) {
+                // TODO: 10/12/21 handle the data received from child activity
+                Toast.makeText(LaunchCameraDualActivity.this, "In launch camera dual onactivity result", Toast.LENGTH_SHORT).show();
             }
         });
-        restLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userDetailMenu.setVisibility(View.GONE);
-            }
-        });
-        userDetailMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userDetailMenu.setVisibility(View.GONE);
-            }
-        });
-
         startCam1.setOnClickListener(view -> {
             Intent intent = new Intent(LaunchCameraDualActivity.this, CameraActivity.class);
             intent.putExtra(getResources().getString(R.string.isStartedForResultKey), true);
             intent.putExtra(getResources().getString(R.string.sampleIndexKey), 1);
-            startActivityForResult(intent, requestCode);
+            activityResultLauncher.launch(intent);
+//            startActivityForResult(intent, mRequestCode);
         });
         startCam2.setOnClickListener(view -> {
             Intent intent = new Intent(LaunchCameraDualActivity.this, CameraActivity.class);
             intent.putExtra(getResources().getString(R.string.isStartedForResultKey), true);
             intent.putExtra(getResources().getString(R.string.sampleIndexKey), 2);
-            startActivityForResult(intent, requestCode);
+            activityResultLauncher.launch(intent);
+//            startActivityForResult(intent, mRequestCode);
         });
     }
 
@@ -123,13 +119,5 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==this.requestCode&&resultCode==RESULT_OK){
-            // TODO: 10/12/21 handle the data received from child activity
-            Toast.makeText(LaunchCameraDualActivity.this,"In launch camera dual onactivity result",Toast.LENGTH_SHORT).show();
-        }
     }
 }
