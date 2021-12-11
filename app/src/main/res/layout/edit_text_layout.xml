@@ -9,7 +9,7 @@
 
     <EditText
         android:id="@+id/editText"
-        android:hint="example - 8cm"
+        android:hint="Enter %"
         android:inputType="numberDecimal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

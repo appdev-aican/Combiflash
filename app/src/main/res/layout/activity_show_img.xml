@@ -65,8 +65,8 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/setLengthBtn"
-        android:text="Set Length"
+        android:id="@+id/setConcentrationBtn"
+        android:text="Set Concentration of B"
         android:visibility="gone"
         android:paddingHorizontal="6pt"
         app:layout_constraintTop_toTopOf="@id/guid1"
@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"/>
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/proceedBtn"
-        android:text="proceed"
+        android:text="Proceed"
         android:visibility="gone"
         android:background="@drawable/btn_background"
         app:layout_constraintTop_toBottomOf="@id/guid2"

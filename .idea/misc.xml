@@ -20,8 +20,8 @@
         <entry key="app/src/main/res/layout/activity_scan_q_r_code.xml" value="0.1984375" />
         <entry key="app/src/main/res/layout/activity_scan_q_r_code_small.xml" value="0.1984375" />
         <entry key="app/src/main/res/layout/activity_show_img.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/edit_text_layout.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/line_layout.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/edit_text_layout.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/line_layout.xml" value="0.22" />
         <entry key="app/src/main/res/layout/mode_select_layout.xml" value="0.22" />
         <entry key="app/src/main/res/menu/main.xml" value="0.1" />
       </map>

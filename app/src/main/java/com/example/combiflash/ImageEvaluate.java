@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.text.DecimalFormat;
 import java.util.Stack;
 
 public class ImageEvaluate extends AppCompatActivity implements View.OnTouchListener{
@@ -34,6 +35,7 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
     float dy,valueMoveUp,height_in_cm;
     Stack<View>viewStack;
     ViewGroup view;
+    private static final DecimalFormat dfZero = new DecimalFormat("0.00");
     @SuppressLint({"ClickableViewAccessibility", "InflateParams"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +126,7 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
         viewStack.push(layout);
         ImageView lockBtn=layout.findViewById(R.id.lockBtn);
         TextView textHeight=layout.findViewById(R.id.height);
-        lockBtn.setBackground(getResources().getDrawable(R.drawable.unlock));
+        lockBtn.setImageDrawable(getResources().getDrawable(R.drawable.unlock));
 
         layout.setOnTouchListener(this);
         lockBtn.setOnClickListener(new View.OnClickListener() {
@@ -140,15 +142,15 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
                     float k=(float) (((float)(height_in_cm*(l2[1]-pos+getResources().getDimensionPixelSize(R.dimen.pad2))))/
                             ((float) (btl-pos+getResources().getDimensionPixelSize(R.dimen.pad2))));
                     float actualDistance=(height_in_cm-k)/height_in_cm;
-                    textHeight.setText("Rf "+actualDistance);
+                    textHeight.setText("Rf "+dfZero.format(actualDistance));
                     textHeight.setVisibility(View.VISIBLE);
-                    lockBtn.setBackground(getResources().getDrawable(R.drawable.lock2));
+                    lockBtn.setImageDrawable(getResources().getDrawable(R.drawable.lock2));
                     layout.setEnabled(false);
                 }
                 else{
                     lockClicked=0;
                     textHeight.setVisibility(View.INVISIBLE);
-                    lockBtn.setBackground(getResources().getDrawable(R.drawable.unlock));
+                    lockBtn.setImageDrawable(getResources().getDrawable(R.drawable.unlock));
                     layout.setEnabled(true);
                     layout.setOnTouchListener(ImageEvaluate.this);
                 }

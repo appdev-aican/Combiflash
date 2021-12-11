@@ -27,7 +27,7 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
     ImageView iv_capture;
     View viewLineUp;
     ConstraintLayout layout;
-    AppCompatButton setLengthBtn, alterLengthBtn, proceedBtn;
+    AppCompatButton setConcentrationBtn, alterLengthBtn, proceedBtn;
     ActivityResultLauncher<Intent> activityResultLauncher;
     float dy, valueMovement;
     float height_in_cm = 0;
@@ -57,20 +57,20 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
         }
         String path = getIntent().getStringExtra("img_path");
         iv_capture = findViewById(R.id.iv_capture);
-        setLengthBtn = findViewById(R.id.setLengthBtn);
+        setConcentrationBtn = findViewById(R.id.setConcentrationBtn);
         alterLengthBtn = findViewById(R.id.alterLengthBtn);
         proceedBtn = findViewById(R.id.proceedBtn);
         layout = findViewById(R.id.layout);
         iv_capture.setImageURI(Uri.parse(path));
         viewLineUp = findViewById(R.id.viewLineUp);
-        setLengthBtn.setVisibility(View.VISIBLE);
+        setConcentrationBtn.setVisibility(View.VISIBLE);
         alterLengthBtn.setVisibility(View.GONE);
         proceedBtn.setVisibility(View.GONE);
-        setLengthBtn.setOnClickListener(new View.OnClickListener() {
+        setConcentrationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ShowImgActivity.this);
-                builder.setTitle("Please enter the distance between the bottom and top lines");
+                builder.setTitle("Please enter the concentration of B");
                 final View customLayout = getLayoutInflater().inflate(R.layout.edit_text_layout, null);
                 builder.setView(customLayout);
                 builder
@@ -84,7 +84,7 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
                                 } else {
                                     height_in_cm = Float.parseFloat(editText.getText().toString());
                                     alterLengthBtn.setVisibility(View.VISIBLE);
-                                    setLengthBtn.setVisibility(View.GONE);
+                                    setConcentrationBtn.setVisibility(View.GONE);
                                     proceedBtn.setVisibility(View.VISIBLE);
                                 }
                             }

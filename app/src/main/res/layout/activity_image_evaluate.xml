@@ -49,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="15dp"
             android:layout_marginBottom="10pt"
+            android:layout_marginHorizontal="7dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/iv_capture"
             android:background="@drawable/line3"
@@ -72,18 +73,20 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent=".75"/>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideVertical1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent=".05"/>
+        app:layout_constraintGuide_percent="0.0" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideVertical2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent=".95"/>
+        app:layout_constraintGuide_percent="1.0" />
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addBtn"
         android:text="Add"
