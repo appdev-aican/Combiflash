@@ -4,6 +4,7 @@ import static com.example.combiflash.AppFunctions.setTextDrawables;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +27,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LaunchCameraDualActivity extends AppCompatActivity {
-    private final int mRequestCode = 1;
     boolean isFirstSampleTaken = false, isSecondSampleTaken = false;
     ConstraintLayout userDetailMenu, restLayout;
     AppCompatButton startCam1, startCam2, signOut, proceedBtn;
@@ -35,7 +35,7 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
     FirebaseAuth auth;
     DocumentReference user;
     ActivityResultLauncher<Intent> activityResultLauncher;
-
+SampleData[] sampleData=new SampleData[2];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +60,14 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
         loadData();
         proceedBtn.setVisibility(View.INVISIBLE);
         proceedBtn.setOnClickListener(v -> {
-            // TODO: 10/12/21 take to graphs and processing activity
+            Log.e("TAG", "launchcamera dual: put conc values "+sampleData[0].getConcentration()+" "+sampleData[1].getConcentration() );
+           Intent graphIntent=new Intent(LaunchCameraDualActivity.this,GraphActivity.class);
+            graphIntent.putExtra(getResources().getString(R.string.modeKey),getResources().getString(R.string.modeDual));
+            graphIntent.putExtra(getResources().getString(R.string.concentration1Key),sampleData[0].getConcentration());
+            graphIntent.putExtra(getResources().getString(R.string.concentration2Key),sampleData[1].getConcentration());
+            graphIntent.putExtra(getResources().getString(R.string.rfArray1Key),sampleData[0].getRfValues());
+            graphIntent.putExtra(getResources().getString(R.string.rfArray2Key),sampleData[1].getRfValues());
+            startActivity(graphIntent);
         });
         signOut.setOnClickListener(view -> {
             FirebaseAuth.getInstance().signOut();
@@ -72,7 +79,6 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
         userDetailMenu.setOnClickListener(view -> userDetailMenu.setVisibility(View.GONE));
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
-                // TODO: 10/12/21 handle the data received from child activity
                 if (result.getData() != null) {
                     int si = result.getData().getIntExtra(getResources().getString(R.string.sampleIndexKey), -1);
                     switch (si) {
@@ -81,12 +87,17 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
                             startCam1.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.btn_background_blue, null));
                             startCam1.setText("Retake");
                             isFirstSampleTaken = true;
+                            sampleData[0]=new SampleData(result.getData().getFloatExtra(getResources().getString(R.string.concentrationKey),-1),result.getData().getFloatArrayExtra(getResources().getString(R.string.rfArrayKey)));
+                            Log.e("TAG", "launchcamera dual: got conc values "+sampleData[0].getConcentration() );
+
                             break;
                         case 2:
                             setTextDrawables(tvSample2, 0, 0, 0, 0, R.drawable.ic_baseline_check_24, R.color.green, 0, 0);
                             startCam2.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.btn_background_blue, null));
                             startCam2.setText("Retake");
                             isSecondSampleTaken = true;
+                            sampleData[1]=new SampleData(result.getData().getFloatExtra(getResources().getString(R.string.concentrationKey),-1),result.getData().getFloatArrayExtra(getResources().getString(R.string.rfArrayKey)));
+                            Log.e("TAG", "launchcamera dual: got conc values "+sampleData[1].getConcentration() );
                             break;
                         default:
                             Toast.makeText(LaunchCameraDualActivity.this, "Sample couldn't be recorded", Toast.LENGTH_SHORT).show();
@@ -113,25 +124,17 @@ public class LaunchCameraDualActivity extends AppCompatActivity {
 
     private void loadData() {
         user.get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            String name = documentSnapshot.getString("name");
-                            String email = documentSnapshot.getString("email");
-                            userName.setText(name);
-                            userEmail.setText(email);
-                        } else {
-                            Toast.makeText(LaunchCameraDualActivity.this, "Something wrong", Toast.LENGTH_SHORT).show();
-                        }
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("name");
+                        String email = documentSnapshot.getString("email");
+                        userName.setText(name);
+                        userEmail.setText(email);
+                    } else {
+                        Toast.makeText(LaunchCameraDualActivity.this, "Something wrong", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(LaunchCameraDualActivity.this, "Error!!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .addOnFailureListener(e -> Toast.makeText(LaunchCameraDualActivity.this, "Error!!", Toast.LENGTH_SHORT).show());
     }
 
     @Override

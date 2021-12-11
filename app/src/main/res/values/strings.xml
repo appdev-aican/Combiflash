@@ -13,7 +13,21 @@
     <string name="body2">Don’t have an account? Register</string>
     <string name="sampleTxt2">Connect your device now!</string>
 
-<!--    intent keys-->
+    <string name="modeStandard">Standard</string>
+    <string name="modeDual">Dual</string>
+
+    <!--    intent keys-->
     <string name="isStartedForResultKey">ExpectsResult</string>
     <string name="sampleIndexKey">SampleIndex</string>
+    <string name="modeKey">Mode</string>
+
+<!--    when sample index is not required-->
+    <string name="concentrationKey">Concentration</string>
+    <string name="rfArrayKey">RfArray</string>
+
+<!--    when sample index is required-->
+    <string name="concentration1Key">Concentration1</string>
+    <string name="rfArray1Key">RfArray1</string>
+    <string name="concentration2Key">Concentration2</string>
+    <string name="rfArray2Key">RfArray2</string>
 </resources>

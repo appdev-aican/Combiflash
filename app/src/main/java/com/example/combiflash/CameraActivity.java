@@ -40,7 +40,6 @@ import java.util.concurrent.Executors;
 public class CameraActivity extends AppCompatActivity {
     private ImageCapture imageCapture;
     private boolean flashMode = false;
-    private final int mRequestCode = 1;
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     private static final String FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
     private boolean isStartedForResult;
@@ -63,11 +62,13 @@ public class CameraActivity extends AppCompatActivity {
             activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK) {
                     if (result.getData() != null) {
-                        int si = result.getData().getIntExtra(getResources().getString(R.string.sampleIndexKey), -1);
                         Intent backwardIntent = new Intent();
-                        backwardIntent.putExtra(getResources().getString(R.string.sampleIndexKey),si);
-                        // TODO: 10/12/21 put the info received in result to the backward intent
-//            intent.putExtra()
+                        Log.e("TAG", "cameraAct dual: put conc values "+result.getData().getFloatExtra(getResources().getString(R.string.concentrationKey),-4f ));
+
+                        backwardIntent.putExtra(getResources().getString(R.string.sampleIndexKey),result.getData().getIntExtra(getResources().getString(R.string.sampleIndexKey), -1));
+                        backwardIntent.putExtra(getResources().getString(R.string.concentrationKey),result.getData().getFloatExtra(getResources().getString(R.string.concentrationKey), -1));
+                        backwardIntent.putExtra(getResources().getString(R.string.rfArrayKey),result.getData().getFloatArrayExtra(getResources().getString(R.string.rfArrayKey)));
+
                         setResult(RESULT_OK, backwardIntent);
                     }
                 }
@@ -195,7 +196,6 @@ public class CameraActivity extends AppCompatActivity {
                             intent.putExtra(getResources().getString(R.string.isStartedForResultKey), true);
                             intent.putExtra(getResources().getString(R.string.sampleIndexKey), sampleIndex);
                             activityResultLauncher.launch(intent);
-//                            startActivityForResult(intent, requestCode);
                         } else {
                             intent.putExtra(getResources().getString(R.string.isStartedForResultKey), false);
                             startActivity(intent);

@@ -23,14 +23,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 public class ShowImgActivity extends AppCompatActivity implements View.OnTouchListener {
     private boolean isStartedForResult;
     private int sampleIndex = -1;
-    private final int mRequestCode = 1;
     ImageView iv_capture;
     View viewLineUp;
     ConstraintLayout layout;
-    AppCompatButton setConcentrationBtn, alterLengthBtn, proceedBtn;
+    AppCompatButton setConcentrationBtn, alterConcBtn, proceedBtn;
     ActivityResultLauncher<Intent> activityResultLauncher;
     float dy, valueMovement;
-    float height_in_cm = 0;
+    float concentration = 0;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -44,11 +43,11 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
             activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK) {
                     if (result.getData() != null) {
-                        int si = result.getData().getIntExtra(getResources().getString(R.string.sampleIndexKey), -1);
                         Intent backwardIntent = new Intent();
-                        backwardIntent.putExtra(getResources().getString(R.string.sampleIndexKey),si);
-                        // TODO: 10/12/21 put the info received in result to the backward intent
-//            intent.putExtra()
+                        backwardIntent.putExtra(getResources().getString(R.string.sampleIndexKey),result.getData().getIntExtra(getResources().getString(R.string.sampleIndexKey), -1));
+                        backwardIntent.putExtra(getResources().getString(R.string.concentrationKey),result.getData().getFloatExtra(getResources().getString(R.string.concentrationKey), -1));
+                        backwardIntent.putExtra(getResources().getString(R.string.rfArrayKey),result.getData().getFloatArrayExtra(getResources().getString(R.string.rfArrayKey)));
+
                         setResult(RESULT_OK, backwardIntent);
                     }
                 }
@@ -58,13 +57,13 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
         String path = getIntent().getStringExtra("img_path");
         iv_capture = findViewById(R.id.iv_capture);
         setConcentrationBtn = findViewById(R.id.setConcentrationBtn);
-        alterLengthBtn = findViewById(R.id.alterLengthBtn);
+        alterConcBtn = findViewById(R.id.alterLengthBtn);
         proceedBtn = findViewById(R.id.proceedBtn);
         layout = findViewById(R.id.layout);
         iv_capture.setImageURI(Uri.parse(path));
         viewLineUp = findViewById(R.id.viewLineUp);
         setConcentrationBtn.setVisibility(View.VISIBLE);
-        alterLengthBtn.setVisibility(View.GONE);
+        alterConcBtn.setVisibility(View.GONE);
         proceedBtn.setVisibility(View.GONE);
         setConcentrationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,8 +81,8 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
                                 if (editText.getText().toString().isEmpty()) {
                                     Toast.makeText(ShowImgActivity.this, "Please enter any data", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    height_in_cm = Float.parseFloat(editText.getText().toString());
-                                    alterLengthBtn.setVisibility(View.VISIBLE);
+                                    concentration = Float.parseFloat(editText.getText().toString());
+                                    alterConcBtn.setVisibility(View.VISIBLE);
                                     setConcentrationBtn.setVisibility(View.GONE);
                                     proceedBtn.setVisibility(View.VISIBLE);
                                 }
@@ -93,11 +92,11 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
                 dialog.show();
             }
         });
-        alterLengthBtn.setOnClickListener(new View.OnClickListener() {
+        alterConcBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ShowImgActivity.this);
-                builder.setTitle("Please enter the distance between the bottom and top lines");
+                builder.setTitle("Please enter the concentration of B");
                 final View customLayout = getLayoutInflater().inflate(R.layout.edit_text_layout, null);
                 builder.setView(customLayout);
                 builder
@@ -109,7 +108,7 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
                                 if (editText.getText().toString().isEmpty()) {
                                     Toast.makeText(ShowImgActivity.this, "Please enter any data", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    height_in_cm = Float.parseFloat(editText.getText().toString());
+                                    concentration = Float.parseFloat(editText.getText().toString());
                                 }
                             }
                         });
@@ -125,17 +124,17 @@ public class ShowImgActivity extends AppCompatActivity implements View.OnTouchLi
                 Log.e("pos1", String.valueOf(h[1]));
                 Intent intent = new Intent(ShowImgActivity.this, ImageEvaluate.class);
                 intent.putExtra("img_path", path);
-                intent.putExtra("height_in_cm", height_in_cm);
+                intent.putExtra(getResources().getString(R.string.concentrationKey), concentration);
                 intent.putExtra("valueUpMove", valueMovement);
                 intent.putExtra("pos", h[1]);
                 if (isStartedForResult) {
                     intent.putExtra(getResources().getString(R.string.isStartedForResultKey), true);
                     intent.putExtra(getResources().getString(R.string.sampleIndexKey), sampleIndex);
                     activityResultLauncher.launch(intent);
-//                    startActivityForResult(intent, mRequestCode);
                 } else {
                     intent.putExtra(getResources().getString(R.string.isStartedForResultKey), false);
                     startActivity(intent);
+                    finish();
                 }
             }
         });

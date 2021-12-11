@@ -2,20 +2,14 @@ package com.example.combiflash;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -32,7 +26,7 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
     private boolean isStartedForResult;
     private int sampleIndex=-1;
     int lockClicked=0,pos;
-    float dy,valueMoveUp,height_in_cm;
+    float dy,valueMoveUp, concentration;
     Stack<View>viewStack;
     ViewGroup view;
     private static final DecimalFormat dfZero = new DecimalFormat("0.00");
@@ -46,7 +40,7 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
         if(isStartedForResult)
             sampleIndex=getIntent().getIntExtra(getResources().getString(R.string.sampleIndexKey),-1);
         String path=getIntent().getStringExtra("img_path");
-        height_in_cm=  getIntent().getFloatExtra("height_in_cm",0);
+        concentration =  getIntent().getFloatExtra(getResources().getString(R.string.concentrationKey),0);
         valueMoveUp=getIntent().getFloatExtra("valueUpMove",0);
         pos=getIntent().getIntExtra("pos",0);
         Log.e("pos2",String.valueOf(pos));
@@ -79,22 +73,35 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
                 }
             }
         });
-        proceedBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isStartedForResult){
-                    Intent intent=new Intent();
-                    Log.e("TAG", "onClick: sample index in image evaluate is "+sampleIndex );
-                    intent.putExtra(getResources().getString(R.string.sampleIndexKey),sampleIndex);
-//                    intent.putExtra
-                    setResult(RESULT_OK,intent);
-                    finish();
-                    // TODO: 08/12/21 just set the result to the required values
-                }
-                else{
-                    // TODO: 08/12/21 if this activity was not started for result, then open the graph activity from here with all the requireds values(beacuse it is standard mode
-
-                }
+        proceedBtn.setOnClickListener(v -> {
+            float[] rfValues=new float[viewStack.size()];
+            for(int i=0;i<rfValues.length;i++)
+            {
+                View lineView=viewStack.pop();
+                int[] l1 =new int[2];
+                int[] l2 =new int[2];
+                bottomView.getLocationOnScreen(l1);
+                float btl=(float)l1[1]-(((float) bottomView.getHeight())/(float) 2)-getResources().getDimensionPixelSize(R.dimen.pad);
+                lineView.getLocationOnScreen(l2);
+                float k= (concentration *(l2[1]-pos+getResources().getDimensionPixelSize(R.dimen.pad2))) /
+                        (btl-pos+getResources().getDimensionPixelSize(R.dimen.pad2));
+                rfValues[i]=(concentration -k)/ concentration;
+            }
+            if(isStartedForResult){
+                Intent backwardIntent = new Intent();
+                backwardIntent.putExtra(getResources().getString(R.string.sampleIndexKey),sampleIndex);
+                backwardIntent.putExtra(getResources().getString(R.string.concentrationKey),concentration);
+                backwardIntent.putExtra(getResources().getString(R.string.rfArrayKey),rfValues);
+                setResult(RESULT_OK, backwardIntent);
+                finish();
+            }
+            else{
+                Intent graphIntent=new Intent(ImageEvaluate.this,GraphActivity.class);
+                graphIntent.putExtra(getResources().getString(R.string.modeKey),getResources().getString(R.string.modeStandard));
+                graphIntent.putExtra(getResources().getString(R.string.concentrationKey),concentration);
+                graphIntent.putExtra(getResources().getString(R.string.rfArrayKey),rfValues);
+                startActivity(graphIntent);
+                finish();
             }
         });
 
@@ -139,9 +146,9 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
                     bottomView.getLocationOnScreen(l1);
                     float btl=(float)l1[1]-(((float) bottomView.getHeight())/(float) 2)-getResources().getDimensionPixelSize(R.dimen.pad);
                     layout.getLocationOnScreen(l2);
-                    float k=(float) (((float)(height_in_cm*(l2[1]-pos+getResources().getDimensionPixelSize(R.dimen.pad2))))/
+                    float k=(float) (((float)(concentration *(l2[1]-pos+getResources().getDimensionPixelSize(R.dimen.pad2))))/
                             ((float) (btl-pos+getResources().getDimensionPixelSize(R.dimen.pad2))));
-                    float actualDistance=(height_in_cm-k)/height_in_cm;
+                    float actualDistance=(concentration -k)/ concentration;
                     textHeight.setText("Rf "+dfZero.format(actualDistance));
                     textHeight.setVisibility(View.VISIBLE);
                     lockBtn.setImageDrawable(getResources().getDrawable(R.drawable.lock2));
