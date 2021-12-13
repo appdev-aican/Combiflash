@@ -29,6 +29,15 @@ public class SampleData {
         this.rfValues = rfValues;
     }
 
+    public float[] getSortedCvValues(){
+        float[] cvValues=new float[rfValues.length];
+        for(int i=0;i<cvValues.length;i++){
+            cvValues[i]=1.0f/rfValues[i];
+        }
+        Arrays.sort(cvValues);
+        return cvValues;
+    }
+
     @NonNull
     @Override
     public String toString() {
