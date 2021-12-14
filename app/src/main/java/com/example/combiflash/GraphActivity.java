@@ -11,6 +11,9 @@ import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -52,6 +55,8 @@ public class GraphActivity extends AppCompatActivity {
         } else if (mode.equals(getResources().getString(R.string.modeStandard))) {
             sampleData[0] = new SampleData(intent.getFloatExtra(getResources().getString(R.string.concentrationKey), -1.0f), intent.getFloatArrayExtra(getResources().getString(R.string.rfArrayKey)));
             cvValues[0]=sampleData[0].getSortedCvValues();
+            Log.e("TAG", "onCreate: "+ Arrays.toString(sampleData[0].getRfValues()));
+            Log.e("TAG", "onCreate: "+ Arrays.toString(cvValues[0]));
             drawGraphStandard();
 
             //            tvTest.setText("Mode: " + mode + "\n" + sampleData[0].toString());
@@ -73,13 +78,14 @@ public class GraphActivity extends AppCompatActivity {
         rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
         YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setDrawGridLines(false);
+        leftAxis.setDrawGridLines(true);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
         xAxis.setAxisMinimum(0f);
         xAxis.setGranularity(1f);
+        xAxis.setDrawGridLines(false);
 //        xAxis.setValueFormatter(new ValueFormatter() {
 //            @Override
 //            public String getFormattedValue(float value) {
@@ -88,13 +94,51 @@ public class GraphActivity extends AppCompatActivity {
         CombinedData data = new CombinedData();
 
         data.setData(generateLineDataStandard());
-//        data.setData(generateBarDataStandard());
+        data.setData(generateBarDataStandard());
 //        data.setValueTypeface(tfLight);
         xAxis.setAxisMaximum(data.getXMax() + 0.25f);
         chart.setTouchEnabled(true);
         chart.setData(data);
         chart.invalidate();
     }
+
+    private BarData generateBarDataStandard() {
+        ArrayList<BarEntry> entries1 = new ArrayList<>();
+        ArrayList<BarEntry> entries2 = new ArrayList<>();
+
+        for(int i=0;i<cvValues[0].length;i++)
+        {
+            entries1.add(new BarEntry(cvValues[0][i],sampleData[0].getConcentration()*2+10f));
+        }
+//        for (int index = 0; index < count; index++) {
+//            entries1.add(new BarEntry(0, getRandom(25, 25)));
+//
+//            // stacked
+//            entries2.add(new BarEntry(0, new float[]{getRandom(13, 12), getRandom(13, 12)}));
+//        }
+
+        BarDataSet set1 = new BarDataSet(entries1, "Bar 1");
+        set1.setColor(Color.rgb(199, 78, 54));
+//        set1.setValueTextColor(Color.rgb(60, 220, 78));
+        set1.setDrawValues(false);
+        set1.setValueTextSize(10f);
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+
+        float groupSpace = 0.06f;
+        float barSpace = 0.02f; // x2 dataset
+        float barWidth = 0.01f; // x2 dataset
+        // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
+
+        BarData d = new BarData(set1);
+        d.setBarWidth(barWidth);
+
+        // make this BarData object grouped
+//        d.groupBars(0, groupSpace, barSpace); // start at x = 0
+
+        return d;
+    }
+
     private LineData generateLineDataStandard() {
 
         LineData d = new LineData();
