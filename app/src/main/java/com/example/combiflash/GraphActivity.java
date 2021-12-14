@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -95,50 +96,35 @@ public class GraphActivity extends AppCompatActivity {
 
         data.setData(generateLineDataStandard());
         data.setData(generateBarDataStandard());
-//        data.setValueTypeface(tfLight);
         xAxis.setAxisMaximum(data.getXMax() + 0.25f);
         chart.setTouchEnabled(true);
         chart.setData(data);
         chart.invalidate();
     }
 
+    @NonNull
     private BarData generateBarDataStandard() {
         ArrayList<BarEntry> entries1 = new ArrayList<>();
-        ArrayList<BarEntry> entries2 = new ArrayList<>();
 
         for(int i=0;i<cvValues[0].length;i++)
         {
             entries1.add(new BarEntry(cvValues[0][i],sampleData[0].getConcentration()*2+10f));
         }
-//        for (int index = 0; index < count; index++) {
-//            entries1.add(new BarEntry(0, getRandom(25, 25)));
-//
-//            // stacked
-//            entries2.add(new BarEntry(0, new float[]{getRandom(13, 12), getRandom(13, 12)}));
-//        }
 
         BarDataSet set1 = new BarDataSet(entries1, "Bar 1");
         set1.setColor(Color.rgb(199, 78, 54));
-//        set1.setValueTextColor(Color.rgb(60, 220, 78));
         set1.setDrawValues(false);
-        set1.setValueTextSize(10f);
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
 
 
-        float groupSpace = 0.06f;
-        float barSpace = 0.02f; // x2 dataset
-        float barWidth = 0.01f; // x2 dataset
-        // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
-
+        float barWidth = 0.01f;
         BarData d = new BarData(set1);
         d.setBarWidth(barWidth);
-
-        // make this BarData object grouped
-//        d.groupBars(0, groupSpace, barSpace); // start at x = 0
 
         return d;
     }
 
+    @NonNull
     private LineData generateLineDataStandard() {
 
         LineData d = new LineData();
@@ -151,15 +137,11 @@ public class GraphActivity extends AppCompatActivity {
         entries.add(new Entry(cvValues[0][0]+10*(cvValues[0][cvValues[0].length-1]-cvValues[0][0])/13,sampleData[0].concentration*2));
         entries.add(new Entry(cvValues[0][cvValues[0].length-1],sampleData[0].concentration*2));
         LineDataSet set = new LineDataSet(entries, "Line DataSet");
-        set.setColor(Color.rgb(240, 238, 70));
-        set.setLineWidth(2.5f);
-        set.setCircleColor(Color.rgb(240, 238, 70));
-        set.setCircleRadius(1f);
-        set.setFillColor(Color.rgb(240, 238, 70));
+        set.setColor(Color.rgb(31, 136, 222));
+        set.setLineWidth(2f);
+        set.setDrawCircles(false);
         set.setMode(LineDataSet.Mode.LINEAR);
-        set.setDrawValues(true);
-        set.setValueTextSize(10f);
-        set.setValueTextColor(Color.rgb(240, 238, 70));
+        set.setDrawValues(false);
 
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         d.addDataSet(set);
