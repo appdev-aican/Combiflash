@@ -12,7 +12,7 @@
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        android:id="@+id/tvTest"/>-->
-    <com.github.mikephil.charting.charts.CombinedChart
+    <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -19,6 +20,7 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +30,7 @@ public class GraphActivity extends AppCompatActivity {
     String mode;
     SampleData[] sampleData = new SampleData[2];
     float[][] cvValues=new float[2][];
-    private CombinedChart chart;
+    private LineChart chart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,13 +39,7 @@ public class GraphActivity extends AppCompatActivity {
         chart.getDescription().setEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
         chart.setDrawGridBackground(false);
-        chart.setDrawBarShadow(false);
-        chart.setHighlightFullBarEnabled(false);
 
-        // draw bars behind lines
-        chart.setDrawOrder(new CombinedChart.DrawOrder[]{
-                CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.BUBBLE, CombinedChart.DrawOrder.CANDLE, CombinedChart.DrawOrder.LINE, CombinedChart.DrawOrder.SCATTER
-        });
         Intent intent = getIntent();
         mode = intent.getStringExtra(getResources().getString(R.string.modeKey));
         if (mode.equals(getResources().getString(R.string.modeDual))) {
@@ -92,42 +88,21 @@ public class GraphActivity extends AppCompatActivity {
 //            public String getFormattedValue(float value) {
 //            }
 //        });
-        CombinedData data = new CombinedData();
 
-        data.setData(generateLineDataStandard());
-        data.setData(generateBarDataStandard());
-        xAxis.setAxisMaximum(data.getXMax() + 0.25f);
+        ArrayList<ILineDataSet> data=new ArrayList<>();
+        data.add(generateLineDataStandard());
+        data.addAll(generateVerticalLineDataStandard());
+//        xAxis.setAxisMaximum(Math.max(data.get(0).getXMax(),data.get(1).getXMax()) + 0.25f);
+        LineData lineData=new LineData(data);
         chart.setTouchEnabled(true);
-        chart.setData(data);
+        chart.setData(lineData);
         chart.invalidate();
     }
 
     @NonNull
-    private BarData generateBarDataStandard() {
-        ArrayList<BarEntry> entries1 = new ArrayList<>();
+    private LineDataSet generateLineDataStandard() {
 
-        for(int i=0;i<cvValues[0].length;i++)
-        {
-            entries1.add(new BarEntry(cvValues[0][i],sampleData[0].getConcentration()*2+10f));
-        }
-
-        BarDataSet set1 = new BarDataSet(entries1, "Bar 1");
-        set1.setColor(Color.rgb(199, 78, 54));
-        set1.setDrawValues(false);
-        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-
-        float barWidth = 0.01f;
-        BarData d = new BarData(set1);
-        d.setBarWidth(barWidth);
-
-        return d;
-    }
-
-    @NonNull
-    private LineData generateLineDataStandard() {
-
-        LineData d = new LineData();
+//        LineData d = new LineData();
 
         ArrayList<Entry> entries = new ArrayList<>();
         Log.e("TAG", "generateLineDataStandard: "+ Arrays.toString(cvValues[0]));
@@ -138,16 +113,35 @@ public class GraphActivity extends AppCompatActivity {
         entries.add(new Entry(cvValues[0][cvValues[0].length-1],sampleData[0].concentration*2));
         LineDataSet set = new LineDataSet(entries, "Line DataSet");
         set.setColor(Color.rgb(31, 136, 222));
-        set.setLineWidth(2f);
+        set.setLineWidth(1f);
         set.setDrawCircles(false);
         set.setMode(LineDataSet.Mode.LINEAR);
         set.setDrawValues(false);
 
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        d.addDataSet(set);
-
-        return d;
+        return set;
     }
+    @NonNull
+    private ArrayList<LineDataSet> generateVerticalLineDataStandard() {
 
+        ArrayList<LineDataSet> sets=new ArrayList<>();
+        for(int i=0;i<cvValues[0].length;i++)
+        {
+            ArrayList<Entry> entries = new ArrayList<>();
+
+            entries.add(new Entry(cvValues[0][i],0f));
+            entries.add(new Entry(cvValues[0][i],sampleData[0].getConcentration()*2+17f));
+            LineDataSet set = new LineDataSet(entries, "Line DataSet cv");
+            set.setColor(Color.rgb(199, 78, 54));
+            set.setLineWidth(1f);
+            set.setDrawCircles(false);
+            set.setMode(LineDataSet.Mode.LINEAR);
+            set.setDrawValues(false);
+
+            set.setAxisDependency(YAxis.AxisDependency.LEFT);
+            sets.add(set);
+        }
+        return sets;
+    }
 
 }
