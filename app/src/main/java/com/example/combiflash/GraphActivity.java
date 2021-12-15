@@ -93,6 +93,7 @@ public class GraphActivity extends AppCompatActivity {
         data.add(generateLineDataStandard());
         data.addAll(generateVerticalLineDataStandard());
 //        xAxis.setAxisMaximum(Math.max(data.get(0).getXMax(),data.get(1).getXMax()) + 0.25f);
+        xAxis.setAxisMaximum(cvValues[0][cvValues[0].length-1]+cvValues[0][0]);
         LineData lineData=new LineData(data);
         chart.setTouchEnabled(true);
         chart.setData(lineData);
