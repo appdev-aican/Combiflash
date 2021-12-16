@@ -30,4 +30,11 @@
     <string name="rfArray1Key">RfArray1</string>
     <string name="concentration2Key">Concentration2</string>
     <string name="rfArray2Key">RfArray2</string>
+
+<!--    spinner items-->
+    <string-array name="graphTypes">
+        <item>Equation 1</item>
+        <item>Equation 2</item>
+        <item>Equation 3</item>
+    </string-array>
 </resources>
