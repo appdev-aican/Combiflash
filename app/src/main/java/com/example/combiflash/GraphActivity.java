@@ -155,7 +155,7 @@ public class GraphActivity extends AppCompatActivity {
         Log.e("TAG", "generateLineDataStandard: "+ Arrays.toString(cvValues[0]));
         entries.add(new Entry(cvValues[0][0],sampleData[0].concentration/4));
         entries.add(new Entry(cvValues[0][0]+(cvValues[0][cvValues[0].length-1]-cvValues[0][0])/13,sampleData[0].concentration/4));
-        entries.add(new Entry(cvValues[0][0]+10*(cvValues[0][cvValues[0].length-1]-cvValues[0][0])/13,Math.min(100,sampleData[0].concentration*2)));
+        entries.add(new Entry(cvValues[0][0]+11*(cvValues[0][cvValues[0].length-1]-cvValues[0][0])/13,Math.min(100,sampleData[0].concentration*2)));
         entries.add(new Entry(cvValues[0][cvValues[0].length-1],Math.min(100,sampleData[0].concentration*2)));
         LineDataSet set = new LineDataSet(entries, "Line DataSet 3");
         set.setColor(Color.rgb(31, 136, 222));
@@ -168,12 +168,30 @@ public class GraphActivity extends AppCompatActivity {
     }
     private LineDataSet generateLineDataStandardEqn2(){
         ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(cvValues[0][0],sampleData[0].concentration/4));
+        entries.add(new Entry(cvValues[0][0]+(cvValues[0][cvValues[0].length-1]-cvValues[0][0])/13,sampleData[0].concentration/4));
+        entries.add(new Entry(cvValues[0][0]+11*(cvValues[0][cvValues[0].length-1]-cvValues[0][0])/13,Math.min(100,sampleData[0].concentration)));
+        entries.add(new Entry(cvValues[0][cvValues[0].length-1],Math.min(100,sampleData[0].concentration)));
         LineDataSet set = new LineDataSet(entries, "Line DataSet 2");
+        set.setColor(Color.rgb(31, 136, 222));
+        set.setLineWidth(1f);
+        set.setDrawCircles(false);
+        set.setMode(LineDataSet.Mode.LINEAR);
+        set.setDrawValues(false);
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
         return set;
     }
     private LineDataSet generateLineDataStandardEqn1(){
         ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(0,0));
+        entries.add(new Entry(cvValues[0][cvValues[0].length-1]*1.25f,sampleData[0].getConcentration()));
         LineDataSet set = new LineDataSet(entries, "Line DataSet 1");
+        set.setColor(Color.rgb(31, 136, 222));
+        set.setLineWidth(1f);
+        set.setDrawCircles(false);
+        set.setMode(LineDataSet.Mode.LINEAR);
+        set.setDrawValues(false);
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
         return set;
     }
     @NonNull
