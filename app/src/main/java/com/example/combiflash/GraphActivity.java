@@ -62,6 +62,7 @@ public class GraphActivity extends AppCompatActivity {
         chart.setBackgroundColor(Color.WHITE);
         chart.setDrawGridBackground(false);
         chart.setTouchEnabled(true);
+        chart.getXAxis().setLabelCount(5, true);
         Legend l = chart.getLegend();
         l.setWordWrapEnabled(true);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
@@ -97,28 +98,33 @@ public class GraphActivity extends AppCompatActivity {
                     switch (position) {
                         case 0:
                             data.add(generateLineDataDualEqn1());
+                            chart.getXAxis().setAxisMaximum(data.get(0).getXMax());
                             break;
                         case 1:
                             data.add(generateLineDataDualEqn2());
+                            chart.getXAxis().setAxisMaximum(data.get(0).getXMax());
                             break;
                         case 2:
                             data.add(generateLineDataDualEqn3());
+                            chart.getXAxis().setAxisMaximum(data.get(0).getXMax());
                             break;
                     }
                 } else if (mode.equals(getResources().getString(R.string.modeStandard))) {
                     switch (position) {
                         case 0:
                             data.add(generateLineDataStandardEqn1());
+                            chart.getXAxis().setAxisMaximum(cvValues[0][cvValues[0].length - 1]*1.25f);
                             break;
                         case 1:
                             data.add(generateLineDataStandardEqn2());
+                            chart.getXAxis().setAxisMaximum(cvValues[0][cvValues[0].length - 1] + cvValues[0][0]);
                             break;
                         case 2:
                             data.add(generateLineDataStandardEqn3());
+                            chart.getXAxis().setAxisMaximum(cvValues[0][cvValues[0].length - 1] + cvValues[0][0]);
                             break;
                     }
                     data.addAll(generateVerticalLineDataStandard());
-                    chart.getXAxis().setAxisMaximum(cvValues[0][cvValues[0].length - 1] + cvValues[0][0]);
                 }
                 LineData lineData = new LineData(data);
                 chart.setData(lineData);
@@ -139,6 +145,10 @@ public class GraphActivity extends AppCompatActivity {
         float cf1, cf2, bf1, bf2;
         float cv1, cv2, range, b1, b2;
 
+        Log.e("TAG", "Data 1 -----------------------" );
+        Log.e("TAG", "concentration="+sampleData[0].getConcentration() );
+        Log.e("TAG", "rf values="+ Arrays.toString(sampleData[0].getRfValues()));
+        Log.e("TAG", "cv values="+ Arrays.toString(cvValues[0])+"\n");
         //from sample 1
         cv1 = cvValues[0][0];
         cv2 = cvValues[0][1];
@@ -149,31 +159,67 @@ public class GraphActivity extends AppCompatActivity {
                 cv2 = cvValues[0][i];
             }
         }
+        Log.e("TAG", "Close cv values obtained= "+ cv1+" and "+cv2);
+
         cf1 = (cv1 + cv2) / 2;
+        Log.e("TAG", "Thus Ci = "+cf1);
+        Log.e("TAG", "c values range is  = "+range);
+        Log.e("TAG", "first part till  = "+(range/13+cvValues[0][0]));
+        Log.e("TAG", "second part till  = "+(11*range/13+cvValues[0][0]));
+        Log.e("TAG", "third part till  = end cv");
+
         if (cv1 < cvValues[0][0] + range / 13f) {
-            b1 = sampleData[0].concentration / 4;
+            Log.e("TAG", "first cv value lies in first part thus b1 set to conc/4 "+sampleData[0].getConcentration()/4);
+
+            b1 = sampleData[0].getConcentration() / 4;
         } else if (cv1 < cvValues[0][0] + 11 * range / 13f) {
+            Log.e("TAG", "first cv value lies in second part thus calculating b1 with line eqn");
+            Log.e("TAG", "x1="+(cvValues[0][0] + range / 13));
+            Log.e("TAG", "x2="+(cvValues[0][0] + 11 * range / 13));
+            Log.e("TAG", "y1="+sampleData[0].getConcentration() / 4);
+            Log.e("TAG", "y2="+Math.min(100f, 2 * sampleData[0].getConcentration()));
+
             float x1 = cvValues[0][0] + range / 13;
             float x2 = cvValues[0][0] + 11 * range / 13;
-            float y1 = sampleData[0].concentration / 4;
-            float y2 = Math.min(100f, 2 * sampleData[0].concentration);
-            b1 = y1 + (y2 - y1) / (x2 - x1) * (cv1 - x1);
+            float y1 = sampleData[0].getConcentration() / 4;
+            float y2 = Math.min(100f, 2 * sampleData[0].getConcentration());
+            float v = (y2 - y1) / (x2 - x1) * (cv1 - x1);
+            b1 = y1 + v;
+            Log.e("TAG", "b1 set to = "+(y1 + v));
+
         } else {
-            b1 = Math.min(100f, 2 * sampleData[0].concentration);
+            b1 = Math.min(100f, 2 * sampleData[0].getConcentration());
+            Log.e("TAG", "first cv value lies in third part thus b1 set to conc*2(cap 100) "+Math.min(100f, 2 * sampleData[0].getConcentration()));
+
         }
         if (cv2 < cvValues[0][0] + range / 13f) {
-            b2 = sampleData[0].concentration / 4;
+            Log.e("TAG", "second cv value lies in first part thus b2 set to conc/4 "+sampleData[0].getConcentration()/4);
+            b2 = sampleData[0].getConcentration() / 4;
         } else if (cv2 < cvValues[0][0] + 11 * range / 13f) {
+            Log.e("TAG", "second cv value lies in second part thus calculating b1 with line eqn");
+            Log.e("TAG", "x1="+(cvValues[0][0] + range / 13));
+            Log.e("TAG", "x2="+(cvValues[0][0] + 11 * range / 13));
+            Log.e("TAG", "y1="+(sampleData[0].getConcentration() / 4));
+            Log.e("TAG", "y2="+Math.min(100f, 2 * sampleData[0].getConcentration()));
+
             float x1 = cvValues[0][0] + range / 13;
             float x2 = cvValues[0][0] + 11 * range / 13;
-            float y1 = sampleData[0].concentration / 4;
-            float y2 = Math.min(100f, 2 * sampleData[0].concentration);
-            b2 = y1 + (y2 - y1) / (x2 - x1) * (cv2 - x1);
+            float y1 = sampleData[0].getConcentration() / 4;
+            float y2 = Math.min(100f, 2 * sampleData[0].getConcentration());
+            float v = (y2 - y1) / (x2 - x1) * (cv2 - x1);
+            Log.e("TAG", "b2 set to = "+(y1 + v));
+            b2 = y1 + v;
         } else {
-            b2 = Math.min(100f, 2 * sampleData[0].concentration);
+            b2 = Math.min(100f, 2 * sampleData[0].getConcentration());
+            Log.e("TAG", "second cv value lies in third part thus b2 set to conc*2(cap 100) "+Math.min(100f, 2 * sampleData[0].getConcentration()));
         }
         bf1 = (b1 + b2) / 2;
+        Log.e("TAG", "Thus Bi = "+bf1);
 
+        Log.e("TAG", "\n\nData 2 -----------------------" );
+        Log.e("TAG", "concentration="+sampleData[1].getConcentration() );
+        Log.e("TAG", "rf values="+ Arrays.toString(sampleData[1].getRfValues()));
+        Log.e("TAG", "cv values="+ Arrays.toString(cvValues[1])+"\n");
         //from sample 2
         cv1 = cvValues[1][0];
         cv2 = cvValues[1][1];
@@ -184,33 +230,62 @@ public class GraphActivity extends AppCompatActivity {
                 cv2 = cvValues[1][i];
             }
         }
+        Log.e("TAG", "Close cv values obtained= "+ cv1+" and "+cv2);
         cf2 = (cv1 + cv2) / 2;
+        Log.e("TAG", "Thus Cii = "+cf2);
+        Log.e("TAG", "c values range is  = "+range);
+        Log.e("TAG", "first part till  = "+(range/13+cvValues[1][0]));
+        Log.e("TAG", "second part till  = "+(11*range/13+cvValues[1][0]));
+        Log.e("TAG", "third part till  = end cv");
+
         if (cv1 < cvValues[1][0] + range / 13f) {
-            b1 = sampleData[1].concentration / 4;
+            Log.e("TAG", "first cv value lies in first part thus b1 set to conc/4 "+sampleData[1].getConcentration()/4);
+            b1 = sampleData[1].getConcentration() / 4;
         } else if (cv1 < cvValues[1][0] + 11 * range / 13f) {
+            Log.e("TAG", "first cv value lies in second part thus calculating b1 with line eqn");
+            Log.e("TAG", "x1="+cvValues[1][0] + range / 13);
+            Log.e("TAG", "x2="+cvValues[1][0] + 11 * range / 13);
+            Log.e("TAG", "y1="+sampleData[1].getConcentration() / 4);
+            Log.e("TAG", "y2="+Math.min(100f, 2 * sampleData[1].getConcentration()));
             float x1 = cvValues[1][0] + range / 13;
             float x2 = cvValues[1][0] + 11 * range / 13;
-            float y1 = sampleData[1].concentration / 4;
-            float y2 = Math.min(100f, 2 * sampleData[1].concentration);
-            b1 = y1 + (y2 - y1) / (x2 - x1) * (cv1 - x1);
+            float y1 = sampleData[1].getConcentration() / 4;
+            float y2 = Math.min(100f, 2 * sampleData[1].getConcentration());
+            final float v = (y2 - y1) / (x2 - x1) * (cv1 - x1);
+            b1 = y1 + v;
+            Log.e("TAG", "b1 set to = "+y1 + v);
         } else {
-            b1 = Math.min(100f, 2 * sampleData[1].concentration);
+            b1 = Math.min(100f, 2 * sampleData[1].getConcentration());
+            Log.e("TAG", "first cv value lies in third part thus b1 set to conc*2(cap 100) "+Math.min(100f, 2 * sampleData[1].getConcentration()));
         }
         if (cv2 < cvValues[1][0] + range / 13f) {
-            b2 = sampleData[1].concentration / 4;
+            Log.e("TAG", "second cv value lies in first part thus b2 set to conc/4 "+sampleData[1].getConcentration()/4);
+            b2 = sampleData[1].getConcentration() / 4;
         } else if (cv2 < cvValues[1][0] + 11 * range / 13f) {
+            Log.e("TAG", "second cv value lies in second part thus calculating b1 with line eqn");
+            Log.e("TAG", "x1="+(cvValues[1][0] + range / 13));
+            Log.e("TAG", "x2="+(cvValues[1][0] + 11 * range / 13));
+            Log.e("TAG", "y1="+sampleData[1].getConcentration() / 4);
+            Log.e("TAG", "y2="+Math.min(100f, 2 * sampleData[1].getConcentration()));
+
             float x1 = cvValues[1][0] + range / 13;
             float x2 = cvValues[1][0] + 11 * range / 13;
-            float y1 = sampleData[1].concentration / 4;
-            float y2 = Math.min(100f, 2 * sampleData[1].concentration);
-            b2 = y1 + (y2 - y1) / (x2 - x1) * (cv2 - x1);
+            float y1 = sampleData[1].getConcentration() / 4;
+            float y2 = Math.min(100f, 2 * sampleData[1].getConcentration());
+            float v = (y2 - y1) / (x2 - x1) * (cv2 - x1);
+            Log.e("TAG", "b2 set to = "+(y1 + v));
+            b2 = y1 + v;
         } else {
-            b2 = Math.min(100f, 2 * sampleData[1].concentration);
+            b2 = Math.min(100f, 2 * sampleData[1].getConcentration());
+            Log.e("TAG", "second cv value lies in third part thus b2 set to conc*2(cap 100) "+Math.min(100f, 2 * sampleData[1].getConcentration()));
         }
         bf2 = (b1 + b2) / 2;
+        Log.e("TAG", "Thus Bii = "+bf2);
 
         bf = (bf1 + bf2) / 2;
         cf = cf1 + cf2 - 4;
+        Log.e("TAG", "\n\nThus cf = "+cf);
+        Log.e("TAG", "Thus bf = "+bf);
 
         ArrayList<Entry> entries = new ArrayList<>();
         entries.add(new Entry(0, bf / 4));
@@ -218,6 +293,8 @@ public class GraphActivity extends AppCompatActivity {
         entries.add(new Entry(cf, bf));
         entries.add(new Entry(cf + 6, bf));
         entries.add(new Entry((4.0f * (cf - 1) * (Math.min(100f, 2 * bf) - bf) + 3 * bf * cf + 18 * bf) / (3.0f * bf), Math.min(100f, 2 * bf)));
+        Log.e("TAG", "points = "+entries);
+
         LineDataSet set = new LineDataSet(entries, "Line DataSet 3");
         set.setColor(Color.rgb(31, 136, 222));
         set.setLineWidth(1f);
@@ -230,7 +307,160 @@ public class GraphActivity extends AppCompatActivity {
 
     @NonNull
     private ILineDataSet generateLineDataDualEqn2() {
+        float cf, bf;
+        float cf1, cf2, bf1, bf2;
+        float cv1, cv2, range, b1, b2;
+
+        Log.e("TAG", "Data 1 -----------------------" );
+        Log.e("TAG", "concentration="+sampleData[0].getConcentration() );
+        Log.e("TAG", "rf values="+ Arrays.toString(sampleData[0].getRfValues()));
+        Log.e("TAG", "cv values="+ Arrays.toString(cvValues[0])+"\n");
+        //from sample 1
+        cv1 = cvValues[0][0];
+        cv2 = cvValues[0][1];
+        range = cvValues[0][cvValues[0].length - 1] - cvValues[0][0];
+        for (int i = 1; i < cvValues[0].length; i++) {
+            if (cvValues[0][i] - cvValues[0][i - 1] < cv2 - cv1) {
+                cv1 = cvValues[0][i - 1];
+                cv2 = cvValues[0][i];
+            }
+        }
+        Log.e("TAG", "Close cv values obtained= "+ cv1+" and "+cv2);
+
+        cf1 = (cv1 + cv2) / 2;
+        Log.e("TAG", "Thus Ci = "+cf1);
+        Log.e("TAG", "c values range is  = "+range);
+        Log.e("TAG", "first part till  = "+(range/13+cvValues[0][0]));
+        Log.e("TAG", "second part till  = "+(11*range/13+cvValues[0][0]));
+        Log.e("TAG", "third part till  = end cv");
+
+        if (cv1 < cvValues[0][0] + range / 13f) {
+            Log.e("TAG", "first cv value lies in first part thus b1 set to conc/4 "+sampleData[0].getConcentration()/4);
+
+            b1 = sampleData[0].getConcentration() / 4;
+        } else if (cv1 < cvValues[0][0] + 11 * range / 13f) {
+            Log.e("TAG", "first cv value lies in second part thus calculating b1 with line eqn");
+            Log.e("TAG", "x1="+(cvValues[0][0] + range / 13));
+            Log.e("TAG", "x2="+(cvValues[0][0] + 11 * range / 13));
+            Log.e("TAG", "y1="+sampleData[0].getConcentration() / 4);
+            Log.e("TAG", "y2="+Math.min(100f, sampleData[0].getConcentration()));
+
+            float x1 = cvValues[0][0] + range / 13;
+            float x2 = cvValues[0][0] + 11 * range / 13;
+            float y1 = sampleData[0].getConcentration() / 4;
+            float y2 = Math.min(100f, sampleData[0].getConcentration());
+            float v = (y2 - y1) / (x2 - x1) * (cv1 - x1);
+            b1 = y1 + v;
+            Log.e("TAG", "b1 set to = "+(y1 + v));
+
+        } else {
+            b1 = Math.min(100f, sampleData[0].getConcentration());
+            Log.e("TAG", "first cv value lies in third part thus b1 set to conc*2(cap 100) "+Math.min(100f, sampleData[0].getConcentration()));
+
+        }
+        if (cv2 < cvValues[0][0] + range / 13f) {
+            Log.e("TAG", "second cv value lies in first part thus b2 set to conc/4 "+sampleData[0].getConcentration()/4);
+            b2 = sampleData[0].getConcentration() / 4;
+        } else if (cv2 < cvValues[0][0] + 11 * range / 13f) {
+            Log.e("TAG", "second cv value lies in second part thus calculating b1 with line eqn");
+            Log.e("TAG", "x1="+(cvValues[0][0] + range / 13));
+            Log.e("TAG", "x2="+(cvValues[0][0] + 11 * range / 13));
+            Log.e("TAG", "y1="+(sampleData[0].getConcentration() / 4));
+            Log.e("TAG", "y2="+Math.min(100f, sampleData[0].getConcentration()));
+
+            float x1 = cvValues[0][0] + range / 13;
+            float x2 = cvValues[0][0] + 11 * range / 13;
+            float y1 = sampleData[0].getConcentration() / 4;
+            float y2 = Math.min(100f, sampleData[0].getConcentration());
+            float v = (y2 - y1) / (x2 - x1) * (cv2 - x1);
+            Log.e("TAG", "b2 set to = "+(y1 + v));
+            b2 = y1 + v;
+        } else {
+            b2 = Math.min(100f, sampleData[0].getConcentration());
+            Log.e("TAG", "second cv value lies in third part thus b2 set to conc*2(cap 100) "+Math.min(100f, sampleData[0].getConcentration()));
+        }
+        bf1 = (b1 + b2) / 2;
+        Log.e("TAG", "Thus Bi = "+bf1);
+
+        Log.e("TAG", "\n\nData 2 -----------------------" );
+        Log.e("TAG", "concentration="+sampleData[1].getConcentration() );
+        Log.e("TAG", "rf values="+ Arrays.toString(sampleData[1].getRfValues()));
+        Log.e("TAG", "cv values="+ Arrays.toString(cvValues[1])+"\n");
+        //from sample 2
+        cv1 = cvValues[1][0];
+        cv2 = cvValues[1][1];
+        range = cvValues[1][cvValues[1].length - 1] - cvValues[1][0];
+        for (int i = 1; i < cvValues[1].length; i++) {
+            if (cvValues[1][i] - cvValues[1][i - 1] < cv2 - cv1) {
+                cv1 = cvValues[1][i - 1];
+                cv2 = cvValues[1][i];
+            }
+        }
+        Log.e("TAG", "Close cv values obtained= "+ cv1+" and "+cv2);
+        cf2 = (cv1 + cv2) / 2;
+        Log.e("TAG", "Thus Cii = "+cf2);
+        Log.e("TAG", "c values range is  = "+range);
+        Log.e("TAG", "first part till  = "+(range/13+cvValues[1][0]));
+        Log.e("TAG", "second part till  = "+(11*range/13+cvValues[1][0]));
+        Log.e("TAG", "third part till  = end cv");
+
+        if (cv1 < cvValues[1][0] + range / 13f) {
+            Log.e("TAG", "first cv value lies in first part thus b1 set to conc/4 "+sampleData[1].getConcentration()/4);
+            b1 = sampleData[1].getConcentration() / 4;
+        } else if (cv1 < cvValues[1][0] + 11 * range / 13f) {
+            Log.e("TAG", "first cv value lies in second part thus calculating b1 with line eqn");
+            Log.e("TAG", "x1="+cvValues[1][0] + range / 13);
+            Log.e("TAG", "x2="+cvValues[1][0] + 11 * range / 13);
+            Log.e("TAG", "y1="+sampleData[1].getConcentration() / 4);
+            Log.e("TAG", "y2="+Math.min(100f,  sampleData[1].getConcentration()));
+            float x1 = cvValues[1][0] + range / 13;
+            float x2 = cvValues[1][0] + 11 * range / 13;
+            float y1 = sampleData[1].getConcentration() / 4;
+            float y2 = Math.min(100f, sampleData[1].getConcentration());
+            final float v = (y2 - y1) / (x2 - x1) * (cv1 - x1);
+            b1 = y1 + v;
+            Log.e("TAG", "b1 set to = "+y1 + v);
+        } else {
+            b1 = Math.min(100f, sampleData[1].getConcentration());
+            Log.e("TAG", "first cv value lies in third part thus b1 set to conc*2(cap 100) "+Math.min(100f, sampleData[1].getConcentration()));
+        }
+        if (cv2 < cvValues[1][0] + range / 13f) {
+            Log.e("TAG", "second cv value lies in first part thus b2 set to conc/4 "+sampleData[1].getConcentration()/4);
+            b2 = sampleData[1].getConcentration() / 4;
+        } else if (cv2 < cvValues[1][0] + 11 * range / 13f) {
+            Log.e("TAG", "second cv value lies in second part thus calculating b1 with line eqn");
+            Log.e("TAG", "x1="+(cvValues[1][0] + range / 13));
+            Log.e("TAG", "x2="+(cvValues[1][0] + 11 * range / 13));
+            Log.e("TAG", "y1="+sampleData[1].getConcentration() / 4);
+            Log.e("TAG", "y2="+Math.min(100f,  sampleData[1].getConcentration()));
+
+            float x1 = cvValues[1][0] + range / 13;
+            float x2 = cvValues[1][0] + 11 * range / 13;
+            float y1 = sampleData[1].getConcentration() / 4;
+            float y2 = Math.min(100f,  sampleData[1].getConcentration());
+            float v = (y2 - y1) / (x2 - x1) * (cv2 - x1);
+            Log.e("TAG", "b2 set to = "+(y1 + v));
+            b2 = y1 + v;
+        } else {
+            b2 = Math.min(100f,  sampleData[1].getConcentration());
+            Log.e("TAG", "second cv value lies in third part thus b2 set to conc*2(cap 100) "+Math.min(100f,  sampleData[1].getConcentration()));
+        }
+        bf2 = (b1 + b2) / 2;
+        Log.e("TAG", "Thus Bii = "+bf2);
+
+        bf = (bf1 + bf2) / 2;
+        cf = cf1 + cf2 - 4;
+        Log.e("TAG", "\n\nThus cf = "+cf);
+        Log.e("TAG", "Thus bf = "+bf);
+
         ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(0, bf / 4));
+        entries.add(new Entry(1, bf / 4));
+        entries.add(new Entry(cf, bf));
+        entries.add(new Entry(cf + 6, bf));
+        entries.add(new Entry(Math.max(cvValues[0][cvValues[0].length-1],cvValues[1][cvValues[1].length-1]), Math.min(100f,Math.max(sampleData[0].getConcentration(),sampleData[1].getConcentration()))));
+        Log.e("TAG", "points = "+entries);
+
         LineDataSet set = new LineDataSet(entries, "Line DataSet 2");
         set.setColor(Color.rgb(31, 136, 222));
         set.setLineWidth(1f);
@@ -258,10 +488,10 @@ public class GraphActivity extends AppCompatActivity {
     private LineDataSet generateLineDataStandardEqn3() {
         ArrayList<Entry> entries = new ArrayList<>();
         Log.e("TAG", "generateLineDataStandard: " + Arrays.toString(cvValues[0]));
-        entries.add(new Entry(cvValues[0][0], sampleData[0].concentration / 4));
-        entries.add(new Entry(cvValues[0][0] + (cvValues[0][cvValues[0].length - 1] - cvValues[0][0]) / 13, sampleData[0].concentration / 4));
-        entries.add(new Entry(cvValues[0][0] + 11 * (cvValues[0][cvValues[0].length - 1] - cvValues[0][0]) / 13, Math.min(100, sampleData[0].concentration * 2)));
-        entries.add(new Entry(cvValues[0][cvValues[0].length - 1], Math.min(100, sampleData[0].concentration * 2)));
+        entries.add(new Entry(cvValues[0][0], sampleData[0].getConcentration() / 4));
+        entries.add(new Entry(cvValues[0][0] + (cvValues[0][cvValues[0].length - 1] - cvValues[0][0]) / 13, sampleData[0].getConcentration() / 4));
+        entries.add(new Entry(cvValues[0][0] + 11 * (cvValues[0][cvValues[0].length - 1] - cvValues[0][0]) / 13, Math.min(100, sampleData[0].getConcentration() * 2)));
+        entries.add(new Entry(cvValues[0][cvValues[0].length - 1], Math.min(100, sampleData[0].getConcentration() * 2)));
         LineDataSet set = new LineDataSet(entries, "Line DataSet 3");
         set.setColor(Color.rgb(31, 136, 222));
         set.setLineWidth(1f);
@@ -275,10 +505,10 @@ public class GraphActivity extends AppCompatActivity {
     @NonNull
     private LineDataSet generateLineDataStandardEqn2() {
         ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(cvValues[0][0], sampleData[0].concentration / 4));
-        entries.add(new Entry(cvValues[0][0] + (cvValues[0][cvValues[0].length - 1] - cvValues[0][0]) / 13, sampleData[0].concentration / 4));
-        entries.add(new Entry(cvValues[0][0] + 11 * (cvValues[0][cvValues[0].length - 1] - cvValues[0][0]) / 13, Math.min(100, sampleData[0].concentration)));
-        entries.add(new Entry(cvValues[0][cvValues[0].length - 1], Math.min(100, sampleData[0].concentration)));
+        entries.add(new Entry(cvValues[0][0], sampleData[0].getConcentration() / 4));
+        entries.add(new Entry(cvValues[0][0] + (cvValues[0][cvValues[0].length - 1] - cvValues[0][0]) / 13, sampleData[0].getConcentration() / 4));
+        entries.add(new Entry(cvValues[0][0] + 11 * (cvValues[0][cvValues[0].length - 1] - cvValues[0][0]) / 13, Math.min(100, sampleData[0].getConcentration())));
+        entries.add(new Entry(cvValues[0][cvValues[0].length - 1], Math.min(100, sampleData[0].getConcentration())));
         LineDataSet set = new LineDataSet(entries, "Line DataSet 2");
         set.setColor(Color.rgb(31, 136, 222));
         set.setLineWidth(1f);
@@ -293,7 +523,7 @@ public class GraphActivity extends AppCompatActivity {
     private LineDataSet generateLineDataStandardEqn1() {
         ArrayList<Entry> entries = new ArrayList<>();
         entries.add(new Entry(0, 0));
-        entries.add(new Entry(cvValues[0][cvValues[0].length - 1] + cvValues[0][0], sampleData[0].getConcentration()));
+        entries.add(new Entry(cvValues[0][cvValues[0].length - 1]*1.25f, sampleData[0].getConcentration()));
         LineDataSet set = new LineDataSet(entries, "Line DataSet 1");
         set.setColor(Color.rgb(31, 136, 222));
         set.setLineWidth(1f);

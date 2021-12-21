@@ -5,8 +5,8 @@ import androidx.annotation.NonNull;
 import java.util.Arrays;
 
 public class SampleData {
-    float concentration;
-    float[] rfValues;
+    private float concentration;
+    private float[] rfValues;
 
     public SampleData(float concentration, float[] rfValues) {
         this.concentration = concentration;
