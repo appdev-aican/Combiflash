@@ -473,7 +473,73 @@ public class GraphActivity extends AppCompatActivity {
 
     @NonNull
     private ILineDataSet generateLineDataDualEqn1() {
+        float cf, bf;
+        float cf1, cf2, bf1, bf2;
+        float cv1, cv2, range, b1, b2;
+
+        Log.e("TAG", "Data 1 -----------------------" );
+        Log.e("TAG", "concentration="+sampleData[0].getConcentration() );
+        Log.e("TAG", "rf values="+ Arrays.toString(sampleData[0].getRfValues()));
+        Log.e("TAG", "cv values="+ Arrays.toString(cvValues[0])+"\n");
+        //from sample 1
+        cv1 = cvValues[0][0];
+        cv2 = cvValues[0][1];
+        range = cvValues[0][cvValues[0].length - 1]*1.25f;
+        for (int i = 1; i < cvValues[0].length; i++) {
+            if (cvValues[0][i] - cvValues[0][i - 1] < cv2 - cv1) {
+                cv1 = cvValues[0][i - 1];
+                cv2 = cvValues[0][i];
+            }
+        }
+        Log.e("TAG", "Close cv values obtained= "+ cv1+" and "+cv2);
+
+        cf1 = (cv1 + cv2) / 2;
+        Log.e("TAG", "Thus Ci = "+cf1);
+        Log.e("TAG", "range is  = "+range);
+
+        Log.e("TAG", "b1 set to cv1*conc/range "+ sampleData[0].getConcentration()*cv1/range);
+        b1 = sampleData[0].getConcentration()*cv1/range;
+        Log.e("TAG", "b2 set to cv2*conc/range "+ sampleData[0].getConcentration()*cv2/range);
+        b2 = sampleData[0].getConcentration()*cv2/range;
+        bf1 = (b1 + b2) / 2;
+        Log.e("TAG", "Thus Bi = "+bf1);
+
+        Log.e("TAG", "\n\nData 2 -----------------------" );
+        Log.e("TAG", "concentration="+sampleData[1].getConcentration() );
+        Log.e("TAG", "rf values="+ Arrays.toString(sampleData[1].getRfValues()));
+        Log.e("TAG", "cv values="+ Arrays.toString(cvValues[1])+"\n");
+        //from sample 2
+        cv1 = cvValues[1][0];
+        cv2 = cvValues[1][1];
+        range = cvValues[1][cvValues[1].length - 1]*1.25f;
+        for (int i = 1; i < cvValues[1].length; i++) {
+            if (cvValues[1][i] - cvValues[1][i - 1] < cv2 - cv1) {
+                cv1 = cvValues[1][i - 1];
+                cv2 = cvValues[1][i];
+            }
+        }
+        Log.e("TAG", "Close cv values obtained= "+ cv1+" and "+cv2);
+        cf2 = (cv1 + cv2) / 2;
+        Log.e("TAG", "Thus Cii = "+cf2);
+        Log.e("TAG", "range is  = "+range);
+
+        Log.e("TAG", "b1 set to cv1*conc/range "+ sampleData[1].getConcentration()*cv1/range);
+        b1 = sampleData[1].getConcentration()*cv1/range;
+        Log.e("TAG", "b2 set to cv2*conc/range "+ sampleData[1].getConcentration()*cv2/range);
+        b2 = sampleData[1].getConcentration()*cv2/range;
+        bf2 = (b1 + b2) / 2;
+        Log.e("TAG", "Thus Bii = "+bf2);
+
+        bf = (bf1 + bf2) / 2;
+        cf = cf1 + cf2 - 4;
+        Log.e("TAG", "\n\nThus cf = "+cf);
+        Log.e("TAG", "Thus bf = "+bf);
+
         ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(0,0));
+        entries.add(new Entry(cf,bf));
+        entries.add(new Entry(cf+6,bf));
+        entries.add(new Entry(Math.max(cvValues[0][cvValues[0].length-1],cvValues[1][cvValues[1].length-1]),bf*(Math.max(cvValues[0][cvValues[0].length-1],cvValues[1][cvValues[1].length-1])-6)/cf));
         LineDataSet set = new LineDataSet(entries, "Line DataSet 1");
         set.setColor(Color.rgb(31, 136, 222));
         set.setLineWidth(1f);
