@@ -16,12 +16,73 @@
         />
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="400dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvYLabelLeft"
         app:layout_constraintTop_toBottomOf="@id/spGraph"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toStartOf="@id/ivArrowYRight"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvXLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chart"
+        android:text="CV"/>
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivArrowX"
+        android:src="@drawable/ic_baseline_arrow_right_alt_24"
+        android:scaleX="2"
+        app:layout_constraintStart_toEndOf="@+id/tvXLabel"
+        app:layout_constraintTop_toTopOf="@id/tvXLabel"
+        app:layout_constraintBottom_toBottomOf="@id/tvXLabel"
+        android:layout_marginStart="20dp"/>
+    <TextView
+        android:id="@+id/tvYLabelLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="K"
+        android:rotation="270"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/chart"
+        app:layout_constraintBottom_toBottomOf="@id/chart"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:id="@+id/ivArrowYLeft"
+        android:src="@drawable/ic_baseline_arrow_right_alt_24"
+        android:scaleX="2"
+        app:layout_constraintBottom_toTopOf="@id/tvYLabelLeft"
+        app:layout_constraintStart_toStartOf="@id/tvYLabelLeft"
+        app:layout_constraintEnd_toEndOf="@id/tvYLabelLeft"
+        android:rotation="-90"
+        android:layout_marginBottom="20dp"/>
+    <TextView
+        android:id="@+id/tvYLabelRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="conc. (B) %"
+        android:rotation="-90"
+        android:layout_marginEnd="-25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/chart"
+        app:layout_constraintBottom_toBottomOf="@id/chart"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:id="@+id/ivArrowYRight"
+        android:src="@drawable/ic_baseline_arrow_right_alt_24"
+        android:scaleX="2"
+        app:layout_constraintBottom_toTopOf="@id/tvYLabelRight"
+        app:layout_constraintStart_toStartOf="@id/tvYLabelRight"
+        app:layout_constraintEnd_toEndOf="@id/tvYLabelRight"
+        android:rotation="-90"
+        android:layout_marginBottom="40dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
