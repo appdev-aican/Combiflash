@@ -91,7 +91,12 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     private void setUpSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.graphTypes, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter;
+        if (mode.equals(getResources().getString(R.string.modeDual))) {
+            adapter= ArrayAdapter.createFromResource(this, R.array.graphTypesDual, android.R.layout.simple_spinner_item);
+        }else{
+            adapter = ArrayAdapter.createFromResource(this, R.array.graphTypesStandard, android.R.layout.simple_spinner_item);
+        }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -128,6 +133,11 @@ public class GraphActivity extends AppCompatActivity {
                             data.add(generateLineDataStandardEqn3());
                             chart.getXAxis().setAxisMaximum(cvValues[0][cvValues[0].length - 1] + cvValues[0][0]);
                             break;
+                        case 3:
+                            data.add(generateLineDataStandardEqn4());
+                            chart.getXAxis().setAxisMaximum(data.get(0).getXMax());
+                            break;
+
                     }
                     data.addAll(generateVerticalLineDataStandard());
                 }
@@ -550,6 +560,39 @@ public class GraphActivity extends AppCompatActivity {
         entries.add(new Entry(Math.max(cvValues[0][cvValues[0].length-1],cvValues[1][cvValues[1].length-1]),bf*(Math.max(cvValues[0][cvValues[0].length-1],cvValues[1][cvValues[1].length-1])-6)/cf));
         Log.e("TAG", "points = "+entries);
         LineDataSet set = new LineDataSet(entries, "Line DataSet 1");
+        set.setColor(Color.rgb(31, 136, 222));
+        set.setLineWidth(1f);
+        set.setDrawCircles(false);
+        set.setMode(LineDataSet.Mode.LINEAR);
+        set.setDrawValues(false);
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        return set;
+    }
+
+    @NonNull
+    private ILineDataSet generateLineDataStandardEqn4() {
+        float cv1, cv2;
+        cv1 = cvValues[0][0];
+        cv2 = cvValues[0][1];
+        for (int i = 1; i < cvValues[0].length; i++) {
+            if (cvValues[0][i] - cvValues[0][i - 1] < cv2 - cv1) {
+                cv1 = cvValues[0][i - 1];
+                cv2 = cvValues[0][i];
+            }
+        }
+        Log.e("TAG", "Close cv values obtained= "+ cv1+" and "+cv2);
+
+        float x1=sampleData[0].getConcentration()*(1-1/cv1);
+        float cvMax=cvValues[0][cvValues[0].length-1];
+        float b=sampleData[0].getConcentration();
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(0, 0));
+        entries.add(new Entry(0.6f*x1*cvMax*1.25f/b, 0.6f*x1));
+        entries.add(new Entry((0.6f*x1*cvMax*1.25f/b)+3f, 0.6f*x1));
+        entries.add(new Entry(3f+1.25f*cvMax, b));
+        entries.add(new Entry(3f+1.25f*cvMax, b));
+        Log.e("TAG", "Entries: "+entries);
+        LineDataSet set = new LineDataSet(entries, "Line DataSet 4");
         set.setColor(Color.rgb(31, 136, 222));
         set.setLineWidth(1f);
         set.setDrawCircles(false);
