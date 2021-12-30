@@ -6,83 +6,132 @@
     android:layout_height="match_parent"
     android:padding="5dp"
     tools:context=".GraphActivity">
+
     <Spinner
+        android:id="@+id/spGraph"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spGraph"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="0dp"
         android:layout_height="400dp"
-        app:layout_constraintStart_toEndOf="@id/tvYLabelLeft"
-        app:layout_constraintTop_toBottomOf="@id/spGraph"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ivArrowYRight"/>
+        app:layout_constraintEnd_toStartOf="@id/ivArrowYRight"
+        app:layout_constraintStart_toEndOf="@id/tvYLabelLeft"
+        app:layout_constraintTop_toBottomOf="@id/spGraph" />
+
     <TextView
+        android:id="@+id/tvXLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tvXLabel"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="CV"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chart"
-        android:text="CV"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chart" />
+
     <ImageView
+        android:id="@+id/ivArrowX"
         android:layout_width="30dp"
         android:layout_height="wrap_content"
-        android:id="@+id/ivArrowX"
-        android:src="@drawable/ic_baseline_arrow_right_alt_24"
+        android:layout_marginStart="20dp"
         android:scaleX="2"
-        app:layout_constraintStart_toEndOf="@+id/tvXLabel"
-        app:layout_constraintTop_toTopOf="@id/tvXLabel"
+        android:src="@drawable/ic_baseline_arrow_right_alt_24"
         app:layout_constraintBottom_toBottomOf="@id/tvXLabel"
-        android:layout_marginStart="20dp"/>
+        app:layout_constraintStart_toEndOf="@+id/tvXLabel"
+        app:layout_constraintTop_toTopOf="@id/tvXLabel" />
+
     <TextView
         android:id="@+id/tvYLabelLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:text="K"
         android:rotation="270"
+        android:text="K"
+        app:layout_constraintBottom_toBottomOf="@id/chart"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/chart"
-        app:layout_constraintBottom_toBottomOf="@id/chart"/>
+        app:layout_constraintTop_toTopOf="@id/chart" />
+
     <ImageView
+        android:id="@+id/ivArrowYLeft"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:id="@+id/ivArrowYLeft"
-        android:src="@drawable/ic_baseline_arrow_right_alt_24"
-        android:scaleX="2"
-        app:layout_constraintBottom_toTopOf="@id/tvYLabelLeft"
-        app:layout_constraintStart_toStartOf="@id/tvYLabelLeft"
-        app:layout_constraintEnd_toEndOf="@id/tvYLabelLeft"
+        android:layout_marginBottom="20dp"
         android:rotation="-90"
-        android:layout_marginBottom="20dp"/>
+        android:scaleX="2"
+        android:src="@drawable/ic_baseline_arrow_right_alt_24"
+        app:layout_constraintBottom_toTopOf="@id/tvYLabelLeft"
+        app:layout_constraintEnd_toEndOf="@id/tvYLabelLeft"
+        app:layout_constraintStart_toStartOf="@id/tvYLabelLeft" />
+
     <TextView
         android:id="@+id/tvYLabelRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:text="conc. (B) %"
-        android:rotation="-90"
         android:layout_marginEnd="-25dp"
+        android:padding="5dp"
+        android:rotation="-90"
+        android:text="conc. (B) %"
+        app:layout_constraintBottom_toBottomOf="@id/chart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/chart"
-        app:layout_constraintBottom_toBottomOf="@id/chart"/>
+        app:layout_constraintTop_toTopOf="@id/chart" />
+
     <ImageView
+        android:id="@+id/ivArrowYRight"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:id="@+id/ivArrowYRight"
-        android:src="@drawable/ic_baseline_arrow_right_alt_24"
-        android:scaleX="2"
-        app:layout_constraintBottom_toTopOf="@id/tvYLabelRight"
-        app:layout_constraintStart_toStartOf="@id/tvYLabelRight"
-        app:layout_constraintEnd_toEndOf="@id/tvYLabelRight"
+        android:layout_marginBottom="40dp"
         android:rotation="-90"
-        android:layout_marginBottom="40dp"/>
+        android:scaleX="2"
+        android:src="@drawable/ic_baseline_arrow_right_alt_24"
+        app:layout_constraintBottom_toTopOf="@id/tvYLabelRight"
+        app:layout_constraintEnd_toEndOf="@id/tvYLabelRight"
+        app:layout_constraintStart_toStartOf="@id/tvYLabelRight" />
+
+    <SeekBar
+        android:id="@+id/sbPercentageX"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:max="100"
+        android:progress="60"
+        app:layout_constraintEnd_toStartOf="@id/tvPercentage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvXLabel" />
+
+    <TextView
+        android:id="@+id/tvPercentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="60%"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="@id/sbPercentageX"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/sbPercentageX" />
+
+    <SeekBar
+        android:id="@+id/sbHold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:max="8"
+        android:progress="3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sbPercentageX" />
+
+    <TextView
+        android:id="@+id/tvHold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="@id/sbHold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/sbHold" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

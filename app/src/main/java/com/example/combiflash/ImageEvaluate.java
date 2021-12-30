@@ -128,6 +128,7 @@ public class ImageEvaluate extends AppCompatActivity implements View.OnTouchList
                 case MotionEvent.ACTION_UP:
                     clearLockTimerRunnable(view);
                     setLockTimerRunnable(view);
+                    break;
                 default:
                     return false;
             }
