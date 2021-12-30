@@ -7,6 +7,10 @@
         <entry key="app/src/main/res/drawable/backgroung.xml" value="0.21458333333333332" />
         <entry key="app/src/main/res/drawable/btn_background.xml" value="0.21458333333333332" />
         <entry key="app/src/main/res/drawable/btn_background_blue.xml" value="0.21458333333333332" />
+        <entry key="app/src/main/res/drawable/line.xml" value="0.1203125" />
+        <entry key="app/src/main/res/drawable/line2.xml" value="0.1203125" />
+        <entry key="app/src/main/res/drawable/line3.xml" value="0.1203125" />
+        <entry key="app/src/main/res/drawable/line_locked.xml" value="0.1203125" />
         <entry key="app/src/main/res/drawable/lock.xml" value="0.10885416666666667" />
         <entry key="app/src/main/res/drawable/lock2.xml" value="0.10885416666666667" />
         <entry key="app/src/main/res/drawable/minus.xml" value="0.1390625" />
